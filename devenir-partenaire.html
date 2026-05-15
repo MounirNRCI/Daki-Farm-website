@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Devenir partenaire - Daki Farm</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--lime:#84B843;--lime-l:#A8D468;--dark:#1B3318;--ink:#0F1A0F;--w:#fff;--off:#F5F8F2;--muted:#687868;--border:#DDE8D3;--gold:#C9A84C;--nav-h:72px}
+    html{scroll-behavior:smooth}
+    body{font-family:'DM Sans',sans-serif;background:#fff;color:var(--ink);overflow-x:hidden}
+    .wrap{max-width:1280px;margin:0 auto;padding:0 clamp(20px,5vw,80px)}
+    .eyebrow{display:block;font-weight:600;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--lime);margin-bottom:18px}
+    .r{opacity:0;transform:translateY(28px);transition:opacity .75s ease,transform .75s ease}
+    .r.in{opacity:1;transform:none}
+    .r2{transition-delay:.12s}.r3{transition-delay:.24s}.r4{transition-delay:.36s}
+
+    /* NAV */
+    .nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);z-index:100;display:flex;align-items:center;background:rgba(11,20,10,.88);backdrop-filter:blur(18px);border-bottom:1px solid rgba(255,255,255,.07)}
+    .nav-inner{width:100%;display:flex;align-items:center;justify-content:space-between;gap:32px}
+    .nav-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:20px;color:var(--w);text-decoration:none}
+    .nav-logo span{color:var(--lime)}
+    .nav-links{display:flex;align-items:center;gap:36px;list-style:none}
+    .nav-links a{font-size:13.5px;font-weight:500;color:rgba(255,255,255,.62);text-decoration:none;transition:color .2s}
+    .nav-links a:hover,.nav-links a.active{color:var(--w)}
+    .nav-cta{font-weight:600;font-size:13px;padding:10px 22px;border-radius:3px;background:var(--lime);color:var(--dark);border:none;cursor:pointer;transition:background .2s;text-decoration:none;display:inline-flex}
+    .nav-cta:hover{background:var(--lime-l)}
+    .nav-has-drop{position:relative}.nav-has-drop::after{content:"";position:absolute;top:100%;left:-20px;right:-20px;height:16px}
+    .nav-has-drop>a{display:flex;align-items:center;gap:5px}
+    .nav-caret{transition:transform .2s}
+    .nav-has-drop:hover .nav-caret{transform:rotate(180deg)}
+    .nav-drop{position:absolute;top:calc(100% + 14px);left:50%;transform:translateX(-50%) translateY(6px);background:rgba(7,16,5,.97);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,.08);width:500px;padding:8px;opacity:0;pointer-events:none;transition:opacity .18s,transform .18s;z-index:200}
+    .nav-has-drop:hover .nav-drop{opacity:1;pointer-events:all;transform:translateX(-50%) translateY(0)}
+    .nav-drop-grid{display:grid;grid-template-columns:1fr 1fr}
+    .nd{display:flex;align-items:flex-start;gap:12px;padding:13px 14px;text-decoration:none;border-radius:2px;transition:background .15s}
+    .nd:hover{background:rgba(255,255,255,.06)}
+    .nd-n{font-family:'Syne',sans-serif;font-weight:700;font-size:10px;letter-spacing:.12em;color:var(--lime);flex-shrink:0;padding-top:2px}
+    .nd-t{font-size:13px;font-weight:600;color:var(--w);display:block}
+    .nd-d{font-size:11px;color:rgba(255,255,255,.38);display:block;margin-top:3px;font-weight:300}
+
+    /* HERO */
+    .part-hero{position:relative;overflow:hidden;min-height:92vh;display:flex;align-items:flex-end}
+    .part-hero-bg{position:absolute;inset:0;z-index:0}
+    .part-hero-bg video{width:100%;height:100%;object-fit:cover;object-position:center 40%;display:block}
+    .part-hero-bg::after{content:'';position:absolute;inset:0;
+      background:
+        linear-gradient(to top, rgba(4,10,3,.96) 0%, rgba(4,10,3,.65) 35%, rgba(4,10,3,.2) 65%, transparent 100%),
+        linear-gradient(to right, rgba(4,10,3,.4) 0%, transparent 55%)}
+    .hero-inner{position:relative;z-index:2;max-width:760px;padding:var(--nav-h) 0 80px}
+    .hero-tag{display:inline-flex;align-items:center;gap:8px;padding:7px 16px;border:1px solid rgba(132,184,67,.3);border-radius:2px;font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--lime);margin-bottom:36px;backdrop-filter:blur(4px)}
+    .part-h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(36px,5vw,76px);line-height:.96;color:var(--w);letter-spacing:-.05em;margin-bottom:28px}
+    .part-h1 em{font-style:normal;color:var(--lime-l)}
+    .part-lead{font-size:clamp(14px,1.4vw,17px);font-weight:300;line-height:1.8;color:rgba(255,255,255,.52);max-width:520px;margin-bottom:48px}
+    .hero-anchors{display:flex;gap:12px;flex-wrap:wrap}
+    .anchor-btn{padding:11px 22px;border:1px solid rgba(255,255,255,.18);border-radius:2px;font-size:13px;font-weight:500;color:rgba(255,255,255,.7);text-decoration:none;transition:all .2s;backdrop-filter:blur(6px);background:rgba(255,255,255,.04)}
+    .anchor-btn:hover{border-color:var(--lime);color:var(--lime);background:rgba(132,184,67,.06)}
+
+    /* TYPES */
+    .part-types{padding:112px 0;background:var(--w)}
+    .types-h2{font-family:'Syne',sans-serif;font-weight:700;font-size:clamp(28px,3vw,48px);color:var(--ink);letter-spacing:-.04em;line-height:1.05;margin-bottom:16px}
+    .types-h2 em{font-style:normal;color:var(--lime)}
+    .types-sub{font-size:15px;font-weight:300;color:var(--muted);max-width:520px;line-height:1.7;margin-bottom:72px}
+    .types-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px}
+    .type-card{padding:56px 44px;position:relative;overflow:hidden}
+    .type-card.t-a{background:var(--dark)}
+    .type-card.t-b{background:var(--off);border:1px solid var(--border)}
+    .type-card.t-c{background:var(--ink)}
+    .type-num{font-family:'Syne',sans-serif;font-weight:800;font-size:80px;color:rgba(255,255,255,.04);letter-spacing:-.05em;line-height:1;position:absolute;top:20px;right:24px}
+    .type-card.t-b .type-num{color:rgba(0,0,0,.04)}
+    .type-icon{width:52px;height:52px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:28px}
+    .type-card.t-a .type-icon,.type-card.t-c .type-icon{background:rgba(132,184,67,.12);color:var(--lime-l)}
+    .type-card.t-b .type-icon{background:rgba(132,184,67,.1);color:var(--lime)}
+    .type-icon svg{width:26px;height:26px}
+    .type-name{font-family:'Syne',sans-serif;font-weight:700;font-size:22px;letter-spacing:-.02em;margin-bottom:12px;line-height:1.1}
+    .type-card.t-a .type-name,.type-card.t-c .type-name{color:var(--w)}
+    .type-card.t-b .type-name{color:var(--ink)}
+    .type-desc{font-size:14px;font-weight:300;line-height:1.8;margin-bottom:32px}
+    .type-card.t-a .type-desc,.type-card.t-c .type-desc{color:rgba(255,255,255,.42)}
+    .type-card.t-b .type-desc{color:var(--muted)}
+    .type-list{display:flex;flex-direction:column;gap:10px;margin-bottom:36px}
+    .type-item{display:flex;align-items:flex-start;gap:10px;font-size:13px;font-weight:300;line-height:1.5}
+    .type-card.t-a .type-item,.type-card.t-c .type-item{color:rgba(255,255,255,.52)}
+    .type-card.t-b .type-item{color:var(--muted)}
+    .type-item::before{content:'✓';font-weight:700;flex-shrink:0;margin-top:1px}
+    .type-card.t-a .type-item::before,.type-card.t-c .type-item::before{color:var(--lime-l)}
+    .type-card.t-b .type-item::before{color:var(--lime)}
+    .type-cta{font-size:13px;font-weight:600;text-decoration:none;letter-spacing:.04em;display:inline-flex;align-items:center;gap:6px}
+    .type-card.t-a .type-cta,.type-card.t-c .type-cta{color:var(--lime-l)}
+    .type-card.t-b .type-cta{color:var(--lime)}
+
+    /* PROCESS */
+    .part-process{padding:112px 0;background:var(--off)}
+    .proc-h2{font-family:'Syne',sans-serif;font-weight:700;font-size:clamp(28px,3vw,48px);color:var(--ink);letter-spacing:-.04em;line-height:1.05;margin-bottom:16px}
+    .proc-h2 em{font-style:normal;color:var(--lime)}
+    .proc-sub{font-size:15px;font-weight:300;color:var(--muted);max-width:480px;line-height:1.7;margin-bottom:72px}
+    .proc-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:0;position:relative}
+    .proc-steps::before{content:'';position:absolute;top:28px;left:calc(12.5%);right:calc(12.5%);height:1px;background:var(--border);z-index:0}
+    .proc-line-fill{position:absolute;top:26px;left:calc(12.5%);width:0;height:3px;background:var(--lime);z-index:1;transition:width .7s cubic-bezier(.4,0,.2,1);border-radius:2px;pointer-events:none}
+    .proc-step{padding:0 16px;position:relative;z-index:2}
+    .proc-dot{width:56px;height:56px;border-radius:50%;background:var(--w);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;margin-bottom:24px;font-family:'Syne',sans-serif;font-weight:800;font-size:16px;color:var(--ink);transition:all .4s}
+    .proc-time{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--lime);margin-bottom:8px;min-height:16px;opacity:0;transition:opacity .4s}
+    .proc-title{font-family:'Syne',sans-serif;font-weight:700;font-size:16px;color:var(--ink);margin-bottom:10px;transition:color .4s}
+    .proc-desc{font-size:13px;font-weight:300;line-height:1.75;color:var(--muted);transition:color .4s,opacity .4s}
+    /* step states */
+    .proc-step.ps-pending .proc-dot{border-color:rgba(221,232,211,.5);color:rgba(15,26,15,.22)}
+    .proc-step.ps-pending .proc-title{color:rgba(15,26,15,.25)}
+    .proc-step.ps-pending .proc-desc{opacity:.3}
+    .proc-step.ps-active .proc-dot{border-color:var(--lime);background:rgba(132,184,67,.07);color:var(--lime);box-shadow:0 0 0 8px rgba(132,184,67,.1)}
+    .proc-step.ps-active .proc-time{opacity:1}
+    @keyframes pulse-ring{0%,100%{box-shadow:0 0 0 4px rgba(132,184,67,.18)}60%{box-shadow:0 0 0 11px rgba(132,184,67,.04)}}
+    .proc-step.ps-active .proc-dot{animation:pulse-ring 1.8s ease infinite}
+    .proc-step.ps-done .proc-dot{border-color:var(--lime);background:var(--lime);color:var(--w);font-size:22px}
+    .proc-step.ps-done .proc-title,.proc-step.ps-done .proc-desc{opacity:.55}
+
+    /* FORM */
+    .part-form{padding:112px 0;background:var(--w)}
+    .form-layout{display:grid;grid-template-columns:1fr 1fr;gap:96px;align-items:start}
+    .form-left{}
+    .form-h2{font-family:'Syne',sans-serif;font-weight:700;font-size:clamp(26px,2.8vw,42px);color:var(--ink);letter-spacing:-.04em;line-height:1.1;margin-bottom:20px}
+    .form-h2 em{font-style:normal;color:var(--lime)}
+    .form-body{font-size:15px;font-weight:300;line-height:1.8;color:var(--muted);margin-bottom:40px}
+    .form-trust{display:flex;flex-direction:column;gap:12px}
+    .trust-item{display:flex;align-items:center;gap:12px;font-size:13px;font-weight:300;color:var(--muted)}
+    .trust-item svg{width:18px;height:18px;color:var(--lime);flex-shrink:0}
+    form.part-form-el{display:flex;flex-direction:column;gap:20px}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .form-group{display:flex;flex-direction:column;gap:6px}
+    .form-group label{font-size:12px;font-weight:600;color:var(--ink);letter-spacing:.06em;text-transform:uppercase}
+    .form-group input,.form-group select,.form-group textarea{padding:14px 18px;border:1.5px solid var(--border);border-radius:3px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:300;color:var(--ink);background:var(--w);transition:border-color .2s;outline:none;width:100%}
+    .form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--lime)}
+    .form-group textarea{resize:vertical;min-height:120px}
+    .form-group select{appearance:none;cursor:pointer}
+    .form-submit{padding:16px 36px;background:var(--lime);color:var(--dark);border:none;border-radius:3px;font-family:'DM Sans',sans-serif;font-weight:600;font-size:15px;cursor:pointer;transition:background .2s;align-self:flex-start}
+    .form-submit:hover{background:var(--lime-l)}
+    .form-note{font-size:12px;font-weight:300;color:var(--muted);margin-top:-8px}
+
+    @media(max-width:900px){.types-grid,.form-layout{grid-template-columns:1fr}.proc-steps{grid-template-columns:1fr 1fr}.proc-steps::before{display:none}.form-row{grid-template-columns:1fr}.nav-links{display:none}}
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="wrap nav-inner">
+    <a href="home.html" class="nav-logo">Daki<span>Farm</span></a>
+    <ul class="nav-links">
+      <li><a href="qui-sommes-nous.html">Qui sommes-nous</a></li>
+      <li class="nav-has-drop"><a href="services.html">Services <svg class="nav-caret" width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <div class="nav-drop"><div class="nav-drop-grid">
+          <a href="services-elearning.html" class="nd"><span class="nd-n">01</span><div><span class="nd-t">e-learning</span><span class="nd-d">1 000+ capsules vidéo gratuites</span></div></a>
+          <a href="services-arboria.html" class="nd"><span class="nd-n">02</span><div><span class="nd-t">Arbor'IA</span><span class="nd-d">Gestion de parcelles satellite</span></div></a>
+          <a href="services-irrigation.html" class="nd"><span class="nd-n">03</span><div><span class="nd-t">Smart Irrigation</span><span class="nd-d">Irrigation sans capteur physique</span></div></a>
+          <a href="services-maladies.html" class="nd"><span class="nd-n">04</span><div><span class="nd-t">Détection maladies</span><span class="nd-d">Diagnostic IA en quelques secondes</span></div></a>
+          <a href="services-marketplace.html" class="nd"><span class="nd-n">05</span><div><span class="nd-t">Marketplace</span><span class="nd-d">Vente directe sans intermédiaire</span></div></a>
+          <a href="services-callcenter.html" class="nd"><span class="nd-n">06</span><div><span class="nd-t">Call Center ANADER</span><span class="nd-d">Interface humaine complémentaire</span></div></a>
+        </div></div>
+      </li>
+      <li><a href="impact.html">Impact</a></li>
+      <li><a href="nrci.html">NRCI</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <a href="devenir-partenaire.html" class="nav-cta active">Devenir partenaire</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="part-hero">
+  <div class="part-hero-bg">
+    <video autoplay muted loop playsinline>
+      <source src="https://videos.pexels.com/video-files/34717903/14716402_2560_1440_24fps.mp4" type="video/mp4">
+    </video>
+  </div>
+  <div class="wrap">
+    <div class="hero-inner">
+      <span class="hero-tag r">✦ Partenariats institutionnels &amp; privés</span>
+      <h1 class="part-h1 r r2">Construisons ensemble.<br><em>À l'échelle du continent.</em></h1>
+      <p class="part-lead r r3">Daki Farm travaille avec des gouvernements, des agences internationales, des coopératives et des entreprises privées pour déployer ses services agricoles là où l'impact est le plus nécessaire.</p>
+      <div class="hero-anchors r r4">
+        <a href="#gouvernements" class="anchor-btn">Gouvernements &amp; institutions</a>
+        <a href="#bailleurs" class="anchor-btn">Bailleurs &amp; ONG</a>
+        <a href="#entreprises" class="anchor-btn">Entreprises &amp; sponsors</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TYPES DE PARTENARIAT -->
+<section class="part-types">
+  <div class="wrap">
+    <span class="eyebrow r">Trois types de partenariat</span>
+    <h2 class="types-h2 r r2">Un modèle adapté<br><em>à chaque partenaire.</em></h2>
+    <p class="types-sub r r3">Chaque partenariat est structuré selon les objectifs, les capacités et le contexte du partenaire. Un cadre flexible, des engagements clairs.</p>
+    <div class="types-grid r r4">
+      <div class="type-card t-a" id="gouvernements">
+        <div class="type-num">01</div>
+        <div class="type-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M3 22V6l9-4 9 4v16"/><path d="M9 22V12h6v10"/><rect x="11" y="3" width="2" height="3"/></svg></div>
+        <div class="type-name">Gouvernements &amp; Ministères</div>
+        <p class="type-desc">Déploiement national ou régional dans le cadre d'une politique publique agricole. Daki Farm opère en tant qu'opérateur technique sous mandat institutionnel.</p>
+        <div class="type-list">
+          <div class="type-item">Intégration aux programmes ministériels existants</div>
+          <div class="type-item">Co-branding et personnalisation de l'application</div>
+          <div class="type-item">Formation des agents et conseillers agricoles à l'application Daki Farm</div>
+          <div class="type-item">Tableau de bord de suivi gouvernemental</div>
+          <div class="type-item">Rapports d'impact conformes aux standards ODD</div>
+        </div>
+        <a href="#form" class="type-cta">Nous contacter →</a>
+      </div>
+      <div class="type-card t-b" id="bailleurs">
+        <div class="type-num">02</div>
+        <div class="type-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg></div>
+        <div class="type-name">Bailleurs de fonds &amp; ONG</div>
+        <p class="type-desc">Financement d'un programme ciblé (pays, région, culture, public cible) avec un cadre de mesure d'impact rigoureux et des livrables définis contractuellement.</p>
+        <div class="type-list">
+          <div class="type-item">Conception du programme sur mesure</div>
+          <div class="type-item">Cadre logique et indicateurs d'impact</div>
+          <div class="type-item">Évaluation indépendante possible</div>
+          <div class="type-item">Reporting trimestriel et rapport final</div>
+          <div class="type-item">Visibilité institutionnelle sur la plateforme</div>
+        </div>
+        <a href="#form" class="type-cta">Nous contacter →</a>
+      </div>
+      <div class="type-card t-c" id="entreprises">
+        <div class="type-num">03</div>
+        <div class="type-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-4 0v2"/><path d="M8 7V5a2 2 0 0 0-4 0v2"/></svg></div>
+        <div class="type-name">Entreprises &amp; Sponsors privés</div>
+        <p class="type-desc">Sponsoring d'un service ou d'un territoire, intégration d'une chaîne d'approvisionnement agricole, ou déploiement interne pour des programmes RSE à fort impact mesurable.</p>
+        <div class="type-list">
+          <div class="type-item">Sécurisation de l'approvisionnement agricole direct</div>
+          <div class="type-item">Sécurisation de l'approvisionnement agricole</div>
+          <div class="type-item">Programmes RSE certifiés et communicables</div>
+          <div class="type-item">Visibilité auprès de 1M+ agriculteurs</div>
+          <div class="type-item">Co-développement de services spécifiques</div>
+        </div>
+        <a href="#form" class="type-cta">Nous contacter →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESSUS -->
+<section class="part-process">
+  <div class="wrap">
+    <span class="eyebrow r">Comment ça se passe</span>
+    <h2 class="proc-h2 r r2">De la prise de contact<br><em>au déploiement.</em></h2>
+    <p class="proc-sub r r3">Un processus structuré et transparent. De votre première prise de contact à l'activation du programme sur le terrain, en moins de 90 jours.</p>
+    <div class="proc-steps r r4" id="procSteps">
+      <div class="proc-line-fill" id="procFill"></div>
+      <div class="proc-step" data-time="Réponse sous 48h">
+        <div class="proc-dot" data-n="01">01</div>
+        <div class="proc-time"></div>
+        <div class="proc-title">Prise de contact</div>
+        <p class="proc-desc">Remplissez le formulaire ci-dessous. Un membre de notre équipe Partenariats vous rappelle sous 48h ouvrées pour un premier échange.</p>
+      </div>
+      <div class="proc-step" data-time="J+5 à J+10">
+        <div class="proc-dot" data-n="02">02</div>
+        <div class="proc-time"></div>
+        <div class="proc-title">Cadrage stratégique</div>
+        <p class="proc-desc">Présentation de notre offre, diagnostic de votre contexte, identification des services pertinents et discussion du cadre de partenariat adapté.</p>
+      </div>
+      <div class="proc-step" data-time="15 jours ouvrés">
+        <div class="proc-dot" data-n="03">03</div>
+        <div class="proc-time"></div>
+        <div class="proc-title">Proposition détaillée</div>
+        <p class="proc-desc">Remise d'une proposition technique et financière complète : périmètre, jalons, indicateurs d'impact, budget, gouvernance. Délai : 15 jours ouvrés.</p>
+      </div>
+      <div class="proc-step" data-time="Bilan à 90 jours">
+        <div class="proc-dot" data-n="04">04</div>
+        <div class="proc-time"></div>
+        <div class="proc-title">Déploiement</div>
+        <p class="proc-desc">Activation du programme sur le terrain. Pilote 3 mois, évaluation intermédiaire, déploiement à l'échelle. Premier bilan à 90 jours.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FORM -->
+<section class="part-form" id="form">
+  <div class="wrap">
+    <div class="form-layout">
+      <div class="form-left r">
+        <span class="eyebrow">Première prise de contact</span>
+        <h2 class="form-h2">Parlons de<br><em>votre projet.</em></h2>
+        <p class="form-body">Décrivez-nous votre contexte en quelques lignes. Notre équipe Partenariats analyse chaque demande et vous revient sous 48h ouvrées avec une réponse personnalisée - pas un email automatique.</p>
+        <div class="form-trust">
+          <div class="trust-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            Réponse garantie sous 48h ouvrées
+          </div>
+          <div class="trust-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            Vos données restent confidentielles
+          </div>
+          <div class="trust-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            Interlocuteur dédié, pas un centre d'appel
+          </div>
+        </div>
+      </div>
+      <div class="r r2">
+        <form class="part-form-el" onsubmit="handleSubmit(event)">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="prenom">Prénom</label>
+              <input type="text" id="prenom" name="prenom" placeholder="Votre prénom" required>
+            </div>
+            <div class="form-group">
+              <label for="nom">Nom</label>
+              <input type="text" id="nom" name="nom" placeholder="Votre nom" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="organisation">Organisation</label>
+            <input type="text" id="organisation" name="organisation" placeholder="Nom de votre organisation" required>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="email">Email professionnel</label>
+              <input type="email" id="email" name="email" placeholder="vous@organisation.org" required>
+            </div>
+            <div class="form-group">
+              <label for="pays">Pays d'intervention</label>
+              <input type="text" id="pays" name="pays" placeholder="Ex : Côte d'Ivoire, Maroc…">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="type">Type de partenariat envisagé</label>
+            <select id="type" name="type">
+              <option value="">Sélectionnez un type…</option>
+              <option>Gouvernement / Ministère</option>
+              <option>Agence de développement / ONG internationale</option>
+              <option>Fondation privée / Bailleur bilatéral</option>
+              <option>Entreprise / Sponsor privé</option>
+              <option>Coopérative / Organisation paysanne</option>
+              <option>Autre</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="message">Décrivez votre projet</label>
+            <textarea id="message" name="message" placeholder="Contexte, territoire visé, public cible, volume d'agriculteurs, objectifs…" required></textarea>
+          </div>
+          <div class="form-group" style="flex-direction:row;align-items:flex-start;gap:10px">
+            <input type="checkbox" id="consent" name="consent" required style="flex-shrink:0;margin-top:3px;accent-color:var(--lime);width:15px;height:15px;cursor:pointer">
+            <label for="consent" style="font-size:12px;font-weight:300;color:var(--muted);letter-spacing:0;text-transform:none;line-height:1.6;cursor:pointer">Je consens à ce que Daki Farm / NRCI traite mes données personnelles afin de répondre à ma demande de partenariat, conformément à sa politique de confidentialité.</label>
+          </div>
+          <button type="submit" class="form-submit">Envoyer ma demande →</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  const io = new IntersectionObserver(e => e.forEach(x => { if(x.isIntersecting) x.target.classList.add('in'); }), {threshold:.07});
+  document.querySelectorAll('.r').forEach(el => io.observe(el));
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    const btn = e.target.querySelector('.form-submit');
+    btn.textContent = 'Demande envoyée ✓';
+    btn.style.background = 'var(--dark)';
+    btn.style.color = 'var(--lime)';
+    btn.disabled = true;
+  }
+
+  // Process steps animation
+  const procStepEls = document.querySelectorAll('#procSteps .proc-step');
+  const procFill = document.getElementById('procFill');
+  const fillWidths = ['0%', '25%', '50%', '75%'];
+  let pCurr = 0;
+
+  function activateStep(i) {
+    procStepEls.forEach((s, j) => {
+      const dot = s.querySelector('.proc-dot');
+      const timeEl = s.querySelector('.proc-time');
+      s.classList.remove('ps-active', 'ps-done', 'ps-pending');
+      if (j < i) {
+        s.classList.add('ps-done');
+        dot.textContent = '✓';
+        timeEl.textContent = '';
+      } else if (j === i) {
+        s.classList.add('ps-active');
+        dot.textContent = dot.dataset.n;
+        timeEl.textContent = s.dataset.time;
+      } else {
+        s.classList.add('ps-pending');
+        dot.textContent = dot.dataset.n;
+        timeEl.textContent = '';
+      }
+    });
+    if (procFill) procFill.style.width = fillWidths[i];
+  }
+
+  if (procStepEls.length) {
+    activateStep(0);
+    setInterval(() => {
+      pCurr = (pCurr + 1) % procStepEls.length;
+      activateStep(pCurr);
+    }, 2600);
+  }
+</script>
+</body>
+</html>

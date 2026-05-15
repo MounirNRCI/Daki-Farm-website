@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daki Farm - Hero Direction Finale</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --lime:    #84B843;
+      --dark:    #1F3A1F;
+      --darkest: #0d1a0d;
+      --mid:     #2F5233;
+      --gold:    #C9A84C;
+      --w:       #FFFFFF;
+      --kpi-h:   72px;
+      --strip-h: 52px;
+    }
+
+    html, body { height: 100%; overflow: hidden; background: var(--darkest); }
+
+    /* ══════════════════════════════════════
+       HERO WRAPPER
+    ══════════════════════════════════════ */
+    .hero {
+      position: relative;
+      width: 100%; height: 100vh;
+      display: flex; flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* Rich dark gradient - A-style depth */
+    .hero-bg {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse at 10% 30%, rgba(72,125,32,0.28) 0%, transparent 48%),
+        radial-gradient(ellipse at 35% 80%, rgba(40,85,18,0.22) 0%, transparent 42%),
+        radial-gradient(ellipse at 90% 10%, rgba(201,168,76,0.06) 0%, transparent 38%),
+        linear-gradient(152deg, #0a140a 0%, #1a331a 35%, #1F3A1F 65%, #111e11 100%);
+    }
+
+    /* Subtle field-texture from A */
+    .hero-bg::after {
+      content: '';
+      position: absolute; inset: 0;
+      background-image:
+        repeating-linear-gradient(4deg,
+          transparent 0px, transparent 36px,
+          rgba(132,184,67,.014) 36px, rgba(132,184,67,.014) 37px);
+      pointer-events: none;
+    }
+
+    /* ══════════════════════════════════════
+       AFRICA MAP - C-style, right-anchored
+    ══════════════════════════════════════ */
+    .africa-stage {
+      position: absolute;
+      right: -6vw; top: 50%;
+      transform: translateY(-52%);
+      width: min(56vw, 620px);
+      pointer-events: none;
+    }
+
+    /* Dot pulse */
+    @keyframes ring {
+      0%   { r: 6; opacity: .85; }
+      100% { r: 22; opacity: 0; }
+    }
+    @keyframes blink {
+      0%,100% { opacity: 1; } 55% { opacity: .5; }
+    }
+    .dr  { animation: ring  3s infinite ease-out; transform-origin: center; }
+    .dc  { animation: blink 3s infinite ease-in-out; }
+    .dr2 { animation-delay: .9s; }
+    .dr3 { animation-delay: 1.8s; }
+    .dr4 { animation-delay: .4s; }
+    .dr5 { animation-delay: 1.3s; }
+
+    /* ══════════════════════════════════════
+       CONTENT AREA - left-center, B-layout
+    ══════════════════════════════════════ */
+    .content {
+      position: relative; z-index: 10;
+      flex: 1;
+      display: flex; flex-direction: column;
+      justify-content: center;
+      padding: 0 clamp(28px, 7vw, 110px) var(--kpi-h);
+      max-width: min(680px, 58vw);
+      /* on smaller screens, take full width */
+    }
+
+    /* Credibility band - A-style */
+    .cred {
+      display: flex; align-items: center;
+      gap: 12px; margin-bottom: 32px;
+    }
+    .cred-line { width: 28px; height: 1px; background: rgba(132,184,67,.4); }
+    .cred-txt {
+      font-family: 'DM Sans', sans-serif; font-weight: 500;
+      font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase;
+      color: rgba(255,255,255,.52);
+    }
+    .cred-dot {
+      width: 3px; height: 3px; border-radius: 50%;
+      background: var(--lime); opacity: .7;
+    }
+
+    /* Logo chips - small bordered badges */
+    .cred-chip {
+      font-family: 'DM Sans', sans-serif; font-weight: 600;
+      font-size: 10px; letter-spacing: .08em; text-transform: uppercase;
+      color: rgba(132,184,67,.75);
+      border: 1px solid rgba(132,184,67,.28);
+      padding: 3px 9px; border-radius: 3px;
+    }
+
+    /* H1 - Syne, B-tagline, A-gravitas */
+    .h1 {
+      font-family: 'Syne', sans-serif; font-weight: 800;
+      font-size: clamp(30px, 4.8vw, 64px);
+      line-height: 1.06; color: var(--w);
+      margin-bottom: 22px; letter-spacing: -.01em;
+    }
+    .h1 .accent { color: var(--lime); }
+
+    /* Tagline - B's human subtitle */
+    .tagline {
+      font-family: 'DM Sans', sans-serif; font-weight: 300;
+      font-size: clamp(14px, 1.5vw, 18px);
+      color: rgba(255,255,255,.62); line-height: 1.7;
+      margin-bottom: 38px;
+    }
+    .tagline strong {
+      color: rgba(255,255,255,.88); font-weight: 500;
+    }
+
+    /* CTAs */
+    .ctas { display: flex; gap: 14px; flex-wrap: wrap; }
+    .btn-p {
+      font-family: 'DM Sans', sans-serif; font-weight: 600;
+      font-size: 14px; padding: 13px 28px; border-radius: 4px;
+      background: var(--lime); color: var(--dark);
+      border: none; cursor: pointer;
+      transition: background .2s, transform .15s;
+    }
+    .btn-p:hover { background: #95ca52; transform: translateY(-1px); }
+    .btn-s {
+      font-family: 'DM Sans', sans-serif; font-weight: 500;
+      font-size: 14px; padding: 12px 28px; border-radius: 4px;
+      background: transparent; color: rgba(255,255,255,.82);
+      border: 1.5px solid rgba(255,255,255,.32);
+      cursor: pointer; transition: border-color .2s, transform .15s;
+    }
+    .btn-s:hover { border-color: rgba(255,255,255,.7); transform: translateY(-1px); }
+
+    /* Scroll cue */
+    .scroll-cue {
+      position: absolute; bottom: calc(var(--kpi-h) + var(--strip-h) + 18px);
+      left: clamp(28px, 7vw, 110px);
+      display: flex; align-items: center; gap: 10px;
+    }
+    .scroll-cue span {
+      font-family: 'DM Sans', sans-serif; font-size: 10px;
+      letter-spacing: .12em; text-transform: uppercase;
+      color: rgba(255,255,255,.25);
+    }
+    .chevron {
+      width: 14px; height: 14px;
+      border-right: 1.5px solid rgba(255,255,255,.25);
+      border-bottom: 1.5px solid rgba(255,255,255,.25);
+      transform: rotate(45deg);
+      animation: bob 2.4s infinite ease-in-out;
+    }
+    @keyframes bob {
+      0%,100% { transform: rotate(45deg) translate(0,0); }
+      55%      { transform: rotate(45deg) translate(3px,3px); }
+    }
+
+    /* ══════════════════════════════════════
+       KPI BAR - B-style, full width
+    ══════════════════════════════════════ */
+    .kpi-bar {
+      position: absolute;
+      bottom: var(--strip-h); left: 0; right: 0;
+      height: var(--kpi-h);
+      background: rgba(15, 28, 15, 0.92);
+      backdrop-filter: blur(12px);
+      border-top: 1px solid rgba(132,184,67,.16);
+      display: flex; align-items: center;
+      padding: 0 clamp(24px, 6vw, 96px);
+      gap: clamp(20px, 3.5vw, 60px);
+      z-index: 20;
+    }
+    .kpi {
+      display: flex; flex-direction: column; flex-shrink: 0;
+    }
+    .kpi-n {
+      font-family: 'Syne', sans-serif; font-weight: 700;
+      font-size: clamp(17px, 1.8vw, 24px); color: var(--lime); line-height: 1;
+    }
+    .kpi-l {
+      font-family: 'DM Sans', sans-serif; font-weight: 500;
+      font-size: 10px; letter-spacing: .07em; text-transform: uppercase;
+      color: rgba(255,255,255,.4); margin-top: 4px;
+    }
+    .kpi-sep {
+      width: 1px; height: 28px;
+      background: rgba(255,255,255,.09); flex-shrink: 0;
+    }
+
+    /* ══════════════════════════════════════
+       PARTNER STRIP - C-style
+    ══════════════════════════════════════ */
+    .strip {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      height: var(--strip-h);
+      background: rgba(10, 18, 10, 0.96);
+      border-top: 1px solid rgba(255,255,255,.06);
+      display: flex; align-items: center;
+      justify-content: center;
+      gap: clamp(20px, 3vw, 44px);
+      z-index: 20;
+    }
+    .strip-lbl {
+      font-family: 'DM Sans', sans-serif; font-size: 10px;
+      font-weight: 500; letter-spacing: .1em; text-transform: uppercase;
+      color: rgba(255,255,255,.2);
+    }
+    .strip-name {
+      font-family: 'DM Sans', sans-serif; font-size: 11.5px;
+      font-weight: 600; letter-spacing: .09em; text-transform: uppercase;
+      color: rgba(255,255,255,.38);
+      transition: color .2s; cursor: default;
+    }
+    .strip-name:hover { color: rgba(255,255,255,.72); }
+    .strip-sep { width: 1px; height: 16px; background: rgba(255,255,255,.08); }
+
+    /* ══════════════════════════════════════
+       DEV WATERMARK
+    ══════════════════════════════════════ */
+    .dev-note {
+      position: absolute; top: 12px; right: 14px;
+      font-family: 'DM Sans', sans-serif; font-size: 10px;
+      color: rgba(201,168,76,.55); letter-spacing: .06em;
+      border: 1px solid rgba(201,168,76,.2);
+      padding: 4px 10px; border-radius: 3px;
+      z-index: 30;
+    }
+
+    /* ══════════════════════════════════════
+       RESPONSIVE
+    ══════════════════════════════════════ */
+    @media (max-width: 768px) {
+      .content { max-width: 100%; padding-right: 24px; }
+      .africa-stage { display: none; }
+      .kpi-bar { gap: 16px; padding: 0 20px; }
+      .strip { gap: 16px; }
+      .strip-lbl { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="hero">
+
+  <!-- Background gradient (A) -->
+  <div class="hero-bg"></div>
+
+  <!-- Africa map + dots (C) -->
+  <div class="africa-stage">
+    <svg viewBox="0 0 400 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- Continent -->
+      <path d="
+        M 148,22 C 176,14 218,14 252,22 L 298,40 330,65 354,98
+        C 368,124 376,154 372,180 L 364,202 350,216
+        C 358,224 372,238 374,252 L 364,274 348,288
+        C 342,302 338,318 334,334 L 320,366 297,394 266,418
+        C 240,436 208,446 177,447 C 147,447 118,435 93,418
+        L 66,394 46,366 C 30,342 24,314 26,288
+        L 30,262 42,244 C 48,232 46,220 42,206
+        L 36,183 34,158 C 34,128 44,96 62,72
+        L 84,48 110,30 Z
+      " fill="rgba(132,184,67,0.055)" stroke="rgba(132,184,67,0.18)" stroke-width="1.5"/>
+
+      <!-- Côte d'Ivoire (partenaire actif) -->
+      <circle class="dr dc"  cx="108" cy="270" r="6" fill="none" stroke="#84B843" stroke-width="1.5"/>
+      <circle class="dc"     cx="108" cy="270" r="6" fill="#84B843"/>
+
+      <!-- Togo (partenaire actif) -->
+      <circle class="dr dr2 dc" cx="134" cy="263" r="6" fill="none" stroke="#84B843" stroke-width="1.5"/>
+      <circle class="dc"        cx="134" cy="263" r="6" fill="#84B843" style="animation-delay:.9s"/>
+
+      <!-- Maroc -->
+      <circle class="dr dr3 dc" cx="138" cy="38"  r="5" fill="none" stroke="#C9A84C" stroke-width="1.5"/>
+      <circle class="dc"        cx="138" cy="38"  r="5" fill="#C9A84C" style="animation-delay:1.8s"/>
+
+      <!-- Nigeria (en développement) -->
+      <circle class="dr dr4 dc" cx="164" cy="252" r="4" fill="none" stroke="#84B843" stroke-width="1" style="opacity:.5"/>
+      <circle class="dc"        cx="164" cy="252" r="4" fill="#84B843" style="opacity:.45"/>
+
+      <!-- Sénégal (prospection) -->
+      <circle class="dr dr5 dc" cx="66"  cy="195" r="4" fill="none" stroke="#84B843" stroke-width="1" style="opacity:.38"/>
+      <circle class="dc"        cx="66"  cy="195" r="4" fill="#84B843" style="opacity:.32"/>
+
+      <!-- Faint connection mesh -->
+      <line x1="108" y1="270" x2="134" y2="263" stroke="rgba(132,184,67,.16)" stroke-width="1" stroke-dasharray="3,5"/>
+      <line x1="134" y1="263" x2="164" y2="252" stroke="rgba(132,184,67,.10)" stroke-width="1" stroke-dasharray="3,5"/>
+      <line x1="66"  y1="195" x2="108" y2="270" stroke="rgba(132,184,67,.08)" stroke-width="1" stroke-dasharray="3,5"/>
+      <line x1="138" y1="38"  x2="66"  y2="195" stroke="rgba(201,168,76,.12)" stroke-width="1" stroke-dasharray="3,5"/>
+    </svg>
+  </div>
+
+  <!-- DEV NOTE -->
+  <div class="dev-note">↑ Vidéo / photo terrain HD à intégrer</div>
+
+  <!-- ── MAIN CONTENT ──────────────────────────── -->
+  <div class="content">
+
+    <!-- Credibility band (A) -->
+    <div class="cred">
+      <div class="cred-line"></div>
+      <div class="cred-chip">NRCI</div>
+      <div class="cred-dot"></div>
+      <div class="cred-txt">Certifié Qualiopi</div>
+      <div class="cred-dot"></div>
+      <div class="cred-chip">ANADER</div>
+      <div class="cred-dot"></div>
+      <div class="cred-txt">Finaliste Challenge App Afrique</div>
+    </div>
+
+    <!-- H1 - official mission tagline (C) with lime accent (B) -->
+    <h1 class="h1">
+      Des services agricoles<br>
+      <span class="accent">gratuits</span> pour une<br>
+      Afrique résiliente.
+    </h1>
+
+    <!-- Subtitle - human precision (B) -->
+    <p class="tagline">
+      Daki Farm déploie un écosystème de <strong>6 services numériques</strong>
+      pour renforcer les capacités des agriculteurs africains -
+      en <strong>15+ langues</strong>, gratuitement,
+      avec <strong>1M+ agriculteurs</strong> accessibles via ANADER.
+    </p>
+
+    <!-- CTAs -->
+    <div class="ctas">
+      <button class="btn-p">Découvrir l'écosystème &rarr;</button>
+      <button class="btn-s">Devenir partenaire institutionnel</button>
+    </div>
+
+  </div><!-- /content -->
+
+  <!-- Scroll cue -->
+  <div class="scroll-cue">
+    <span>Découvrir</span>
+    <div class="chevron"></div>
+  </div>
+
+  <!-- KPI bar (B) -->
+  <div class="kpi-bar">
+    <div class="kpi">
+      <span class="kpi-n">1M+</span>
+      <span class="kpi-l">Agriculteurs accessibles</span>
+    </div>
+    <div class="kpi-sep"></div>
+    <div class="kpi">
+      <span class="kpi-n">1 000+</span>
+      <span class="kpi-l">Capsules vidéo</span>
+    </div>
+    <div class="kpi-sep"></div>
+    <div class="kpi">
+      <span class="kpi-n">15+</span>
+      <span class="kpi-l">Langues africaines</span>
+    </div>
+    <div class="kpi-sep"></div>
+    <div class="kpi">
+      <span class="kpi-n">6</span>
+      <span class="kpi-l">Services intégrés</span>
+    </div>
+    <div class="kpi-sep"></div>
+    <div class="kpi">
+      <span class="kpi-n">6M+</span>
+      <span class="kpi-l">Potentiel 24 mois</span>
+    </div>
+  </div>
+
+  <!-- Partners strip (C) -->
+  <div class="strip">
+    <span class="strip-lbl">Avec le soutien de</span>
+    <span class="strip-name">ANADER</span>
+    <div class="strip-sep"></div>
+    <span class="strip-name">Ministère Agriculture CI</span>
+    <div class="strip-sep"></div>
+    <span class="strip-name">République du Togo</span>
+    <div class="strip-sep"></div>
+    <span class="strip-name">Qualiopi</span>
+    <div class="strip-sep"></div>
+    <span class="strip-name">RFI · France 24</span>
+  </div>
+
+</div><!-- /hero -->
+
+</body>
+</html>

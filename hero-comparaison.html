@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daki Farm - 3 Concepts Hero</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --lime:       #84B843;
+      --lime-dim:   rgba(132,184,67,0.18);
+      --dark:       #1F3A1F;
+      --mid:        #2F5233;
+      --darkest:    #0d1a0d;
+      --gold:       #C9A84C;
+      --white:      #FFFFFF;
+      --grey:       #6B7280;
+      --bar-h:      58px;
+    }
+
+    html, body { height: 100%; overflow: hidden; }
+
+    /* ══════════════════════════════════════════════
+       SELECTOR BAR
+    ══════════════════════════════════════════════ */
+    .bar {
+      position: fixed; top: 0; left: 0; right: 0;
+      height: var(--bar-h);
+      background: #080f08;
+      border-bottom: 1px solid rgba(132,184,67,0.15);
+      display: flex; align-items: center;
+      justify-content: space-between;
+      padding: 0 28px;
+      z-index: 100;
+      gap: 20px;
+    }
+    .bar-brand {
+      font-family: 'Syne', sans-serif; font-weight: 800;
+      font-size: 15px; color: var(--lime); white-space: nowrap;
+      letter-spacing: 0.04em;
+    }
+    .bar-brand em {
+      font-style: normal; font-weight: 300;
+      font-family: 'DM Sans', sans-serif;
+      color: rgba(255,255,255,0.3); font-size: 13px;
+      margin-left: 8px; letter-spacing: 0;
+    }
+    .bar-tabs { display: flex; gap: 6px; flex-shrink: 0; }
+    .tab {
+      font-family: 'DM Sans', sans-serif; font-weight: 500;
+      font-size: 13px; padding: 7px 18px; border-radius: 4px;
+      border: 1px solid rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.5); background: transparent;
+      cursor: pointer; transition: all .2s; white-space: nowrap;
+    }
+    .tab:hover { border-color: rgba(132,184,67,0.5); color: rgba(255,255,255,0.85); }
+    .tab.on { background: var(--lime); border-color: var(--lime); color: var(--dark); font-weight: 700; }
+    .bar-note {
+      font-family: 'DM Sans', sans-serif; font-size: 11px;
+      color: rgba(255,255,255,0.22); font-style: italic; white-space: nowrap;
+    }
+
+    /* ══════════════════════════════════════════════
+       HERO STAGE
+    ══════════════════════════════════════════════ */
+    .stage {
+      position: fixed;
+      top: var(--bar-h); left: 0; right: 0; bottom: 0;
+    }
+    .panel {
+      position: absolute; inset: 0;
+      opacity: 0; pointer-events: none;
+      transition: opacity .35s ease;
+    }
+    .panel.on { opacity: 1; pointer-events: all; }
+
+    /* ══════════════════════════════════════════════
+       SHARED COMPONENTS
+    ══════════════════════════════════════════════ */
+    .cred-band {
+      display: flex; align-items: center; gap: 14px;
+      margin-bottom: 28px;
+    }
+    .cred-item {
+      font-family: 'DM Sans', sans-serif; font-weight: 500;
+      font-size: 11px; color: rgba(255,255,255,0.55);
+      letter-spacing: 0.1em; text-transform: uppercase;
+    }
+    .cred-dot {
+      width: 3px; height: 3px; border-radius: 50%;
+      background: var(--lime); opacity: .7; flex-shrink: 0;
+    }
+    .cred-line {
+      width: 32px; height: 1px;
+      background: rgba(132,184,67,0.35); flex-shrink: 0;
+    }
+
+    .btn-p {
+      font-family: 'DM Sans', sans-serif; font-weight: 600;
+      font-size: 14px; padding: 13px 28px; border-radius: 4px;
+      background: var(--lime); color: var(--dark);
+      border: none; cursor: pointer;
+      transition: background .2s, transform .15s;
+      letter-spacing: 0.01em;
+    }
+    .btn-p:hover { background: #95ca52; transform: translateY(-1px); }
+
+    .btn-s {
+      font-family: 'DM Sans', sans-serif; font-weight: 500;
+      font-size: 14px; padding: 12px 28px; border-radius: 4px;
+      background: transparent; color: rgba(255,255,255,0.85);
+      border: 1.5px solid rgba(255,255,255,0.35);
+      cursor: pointer; transition: border-color .2s, transform .15s;
+    }
+    .btn-s:hover { border-color: rgba(255,255,255,0.7); transform: translateY(-1px); }
+
+    .cta-row { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
+
+    /* scroll chevron */
+    .scroll-cue {
+      position: absolute; bottom: 24px; left: 50%;
+      transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 6px;
+    }
+    .scroll-cue span {
+      font-family: 'DM Sans', sans-serif; font-size: 10px;
+      letter-spacing: .12em; text-transform: uppercase;
+      color: rgba(255,255,255,0.28);
+    }
+    .chevron {
+      width: 16px; height: 16px;
+      border-right: 1.5px solid rgba(255,255,255,0.28);
+      border-bottom: 1.5px solid rgba(255,255,255,0.28);
+      transform: rotate(45deg);
+      animation: bob 2.2s infinite ease-in-out;
+    }
+    @keyframes bob {
+      0%,100% { transform: rotate(45deg) translate(0,0); }
+      55%      { transform: rotate(45deg) translate(3px,3px); }
+    }
+
+    /* ══════════════════════════════════════════════
+       CONCEPT A - Géopolitique / Plein écran
+    ══════════════════════════════════════════════ */
+    #pa {
+      background:
+        radial-gradient(ellipse at 22% 35%, rgba(80,135,38,0.38) 0%, transparent 52%),
+        radial-gradient(ellipse at 72% 72%, rgba(42,88,22,0.28) 0%, transparent 48%),
+        radial-gradient(ellipse at 55% 12%, rgba(201,168,76,0.07) 0%, transparent 42%),
+        linear-gradient(158deg, #0d1a0d 0%, #1F3A1F 28%, #253f22 58%, #142812 100%);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center; padding: 40px 24px 80px;
+      overflow: hidden;
+    }
+
+    /* subtle field-rows texture */
+    #pa::before {
+      content: '';
+      position: absolute; inset: 0; pointer-events: none;
+      background-image:
+        repeating-linear-gradient(2deg,
+          transparent 0px, transparent 32px,
+          rgba(132,184,67,.018) 32px, rgba(132,184,67,.018) 33px),
+        repeating-linear-gradient(92deg,
+          transparent 0px, transparent 68px,
+          rgba(132,184,67,.01) 68px, rgba(132,184,67,.01) 69px);
+    }
+
+    /* photo placeholder badge */
+    .pa-photo-badge {
+      position: absolute; top: 14px; right: 16px;
+      font-family: 'DM Sans', sans-serif; font-size: 10px;
+      color: rgba(201,168,76,0.6); letter-spacing: .06em;
+      border: 1px solid rgba(201,168,76,0.25);
+      padding: 4px 10px; border-radius: 3px;
+    }
+
+    #pa .cred-band { justify-content: center; }
+
+    .a-h1 {
+      font-family: 'Syne', sans-serif; font-weight: 800;
+      font-size: clamp(40px, 6.8vw, 96px);
+      line-height: 0.88; color: var(--white);
+      letter-spacing: -.02em;
+      max-width: 900px; margin-bottom: 28px; position: relative;
+    }
+
+    .a-sub {
+      font-family: 'DM Sans', sans-serif; font-weight: 300;
+      font-size: clamp(15px, 1.7vw, 20px); line-height: 1.65;
+      color: rgba(255,255,255,0.72); max-width: 580px;
+      margin-bottom: 40px; position: relative;
+    }
+    .a-sub strong { color: var(--lime); font-weight: 500; }
+
+    /* large decorative quote mark */
+    .a-quote-mark {
+      position: absolute; top: 18%; left: 6%;
+      font-family: 'Syne', sans-serif; font-size: 220px;
+      line-height: 1; color: rgba(132,184,67,0.04);
+      pointer-events: none; user-select: none; font-weight: 800;
+    }
+
+    /* ══════════════════════════════════════════════
+       CONCEPT B - Humain + Tech / Split
+    ══════════════════════════════════════════════ */
+    #pb {
+      display: flex; flex-direction: column;
+    }
+
+    .pb-split {
+      flex: 1; display: grid;
+      grid-template-columns: 1fr 1fr;
+      overflow: hidden; min-height: 0;
+    }
+
+    .pb-photo {
+      position: relative; overflow: hidden;
+      background:
+        radial-gradient(ellipse at 50% 38%, rgba(98,148,42,0.52) 0%, transparent 62%),
+        radial-gradient(ellipse at 28% 72%, rgba(60,110,25,0.4) 0%, transparent 55%),
+        linear-gradient(175deg, #243f1e 0%, #2F5233 45%, #1a3016 100%);
+    }
+
+    /* Field rows on photo side */
+    .pb-photo::before {
+      content: ''; position: absolute; inset: 0; pointer-events: none;
+      background-image: repeating-linear-gradient(
+        8deg, transparent 0%, transparent 3.8%,
+        rgba(132,184,67,.045) 3.8%, rgba(132,184,67,.045) 4.2%
+      );
+    }
+
+    /* Farmer silhouette (SVG embedded) */
+    .pb-silhouette {
+      position: absolute; bottom: 0; left: 50%;
+      transform: translateX(-50%);
+      height: 82%; width: auto; opacity: .18;
+    }
+
+    .pb-photo-label {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center; z-index: 2;
+    }
+    .pb-photo-label p {
+      font-family: 'DM Sans', sans-serif; font-size: 11px;
+      color: rgba(132,184,67,0.65); letter-spacing: .07em;
+      text-transform: uppercase;
+      border: 1px dashed rgba(132,184,67,0.32);
+      padding: 10px 16px; border-radius: 3px; line-height: 1.6;
+    }
+
+    /* Gradient dissolve toward text side */
+    .pb-photo-fade {
+      position: absolute; top: 0; right: 0; bottom: 0; width: 55%;
+      background: linear-gradient(to right, transparent, #0c1a0c);
+    }
+
+    .pb-text {
+      background: #0c1a0c;
+      display: flex; flex-direction: column;
+      justify-content: center;
+      padding: clamp(32px, 4vw, 72px) clamp(32px, 5vw, 80px) clamp(32px, 4vw, 72px) clamp(24px, 3vw, 48px);
+    }
+
+    .b-h1 {
+      font-family: 'Syne', sans-serif; font-weight: 800;
+      font-size: clamp(26px, 3.2vw, 52px);
+      line-height: 1.1; color: var(--white);
+      max-width: 480px; margin-bottom: 18px;
+    }
+    .b-h1 span { color: var(--lime); }
+
+    .b-sub {
+      font-family: 'DM Sans', sans-serif; font-weight: 300;
+      font-size: clamp(13px, 1.35vw, 17px); line-height: 1.68;
+      color: rgba(255,255,255,0.68); max-width: 400px;
+      margin-bottom: 36px;
+    }
+    .b-sub strong { color: rgba(255,255,255,0.9); font-weight: 500; }
+
+    /* KPI bar - spans full width */
+    .pb-kpi {
+      flex-shrink: 0; height: 68px;
+      background: var(--dark);
+      border-top: 1px solid rgba(132,184,67,0.18);
+      display: flex; align-items: center;
+      padding: 0 clamp(24px, 4vw, 56px); gap: clamp(20px, 3vw, 52px);
+    }
+    .kpi-item { display: flex; flex-direction: column; }
+    .kpi-num {
+      font-family: 'Syne', sans-serif; font-weight: 700;
+      font-size: clamp(16px, 1.6vw, 22px); color: var(--lime); line-height: 1;
+    }
+    .kpi-lbl {
+      font-family: 'DM Sans', sans-serif; font-weight: 500;
+      font-size: 10px; letter-spacing: .07em; text-transform: uppercase;
+      color: rgba(255,255,255,0.42); margin-top: 3px;
+    }
+    .kpi-sep { width: 1px; height: 26px; background: rgba(255,255,255,0.1); flex-shrink: 0; }
+
+    /* ══════════════════════════════════════════════
+       CONCEPT C - Carte + Data / Full dark
+    ══════════════════════════════════════════════ */
+    #pc {
+      background: var(--dark);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center;
+      padding: 40px 24px 72px;
+      overflow: hidden; position: relative;
+    }
+
+    /* Africa SVG background */
+    .africa-wrap {
+      position: absolute;
+      right: -3vw; top: 50%;
+      transform: translateY(-50%);
+      width: min(46vw, 460px);
+      pointer-events: none;
+    }
+
+    /* Dot pulse animation */
+    .dot-ring {
+      animation: ring 2.8s infinite ease-out;
+      transform-origin: center;
+    }
+    .dot-ring:nth-child(2) { animation-delay: .9s; }
+    .dot-ring:nth-child(3) { animation-delay: 1.7s; }
+    .dot-ring:nth-child(4) { animation-delay: .4s; }
+    .dot-ring:nth-child(5) { animation-delay: 1.2s; }
+    @keyframes ring {
+      0%   { r: 5; opacity: .9; }
+      100% { r: 18; opacity: 0; }
+    }
+    .dot-core { animation: blink 2.8s infinite ease-in-out; }
+    .dot-core:nth-child(even) { animation-delay: .6s; }
+    @keyframes blink {
+      0%,100% { opacity: 1; } 50% { opacity: .55; }
+    }
+
+    .c-badges {
+      display: flex; flex-wrap: wrap; gap: 8px;
+      justify-content: center;
+      margin-bottom: 30px; position: relative;
+    }
+    .c-badge {
+      font-family: 'DM Sans', sans-serif; font-weight: 500;
+      font-size: 10px; letter-spacing: .1em; text-transform: uppercase;
+      padding: 5px 13px; border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.42);
+    }
+    .c-badge.hi {
+      border-color: rgba(132,184,67,0.38);
+      color: rgba(132,184,67,0.82);
+    }
+
+    .c-h1 {
+      font-family: 'Syne', sans-serif; font-weight: 800;
+      font-size: clamp(28px, 4.2vw, 58px);
+      line-height: 1.1; color: var(--white);
+      max-width: 680px; margin-bottom: 22px; position: relative;
+    }
+    .c-h1 span { color: var(--lime); }
+
+    .c-sub {
+      font-family: 'DM Sans', sans-serif; font-weight: 300;
+      font-size: clamp(14px, 1.55vw, 18px); line-height: 1.65;
+      color: rgba(255,255,255,0.66); max-width: 540px;
+      margin-bottom: 40px; position: relative;
+    }
+    .c-sub strong { color: rgba(255,255,255,0.88); font-weight: 500; }
+
+    /* Partners strip */
+    .c-strip {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      height: 56px;
+      border-top: 1px solid rgba(255,255,255,0.07);
+      display: flex; align-items: center;
+      justify-content: center; gap: 36px;
+    }
+    .strip-lbl {
+      font-family: 'DM Sans', sans-serif; font-size: 10px;
+      font-weight: 500; letter-spacing: .1em; text-transform: uppercase;
+      color: rgba(255,255,255,0.22);
+    }
+    .strip-name {
+      font-family: 'DM Sans', sans-serif; font-size: 12px;
+      font-weight: 600; letter-spacing: .08em; text-transform: uppercase;
+      color: rgba(255,255,255,0.42);
+      transition: color .2s;
+    }
+    .strip-name:hover { color: rgba(255,255,255,0.75); }
+    .strip-sep { width: 1px; height: 18px; background: rgba(255,255,255,0.08); }
+
+    /* ══════════════════════════════════════════════
+       LABEL WATERMARK (concept indicator)
+    ══════════════════════════════════════════════ */
+    .concept-label {
+      position: absolute; bottom: 68px; left: 28px;
+      font-family: 'DM Sans', sans-serif; font-size: 10px;
+      letter-spacing: .12em; text-transform: uppercase;
+      color: rgba(255,255,255,0.18); pointer-events: none;
+    }
+    #pa .concept-label { bottom: 36px; }
+
+  </style>
+</head>
+<body>
+
+<!-- ── SELECTOR BAR ─────────────────────────────── -->
+<div class="bar">
+  <div class="bar-brand">DAKI FARM <em>- 3 Concepts Hero</em></div>
+  <div class="bar-tabs">
+    <button class="tab on"  onclick="show('a',this)">A - Géopolitique</button>
+    <button class="tab"     onclick="show('b',this)">B - Humain &amp; Tech</button>
+    <button class="tab"     onclick="show('c',this)">C - Carte &amp; Data</button>
+  </div>
+  <div class="bar-note">Photos / vidéos terrain HD à remplacer en production</div>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     HERO STAGE
+══════════════════════════════════════════════════ -->
+<div class="stage">
+
+  <!-- ── CONCEPT A ───────────────────────────────── -->
+  <div class="panel on" id="pa">
+    <div class="a-quote-mark">"</div>
+    <div class="pa-photo-badge">↑ Vidéo drone / photo aérienne champs africains</div>
+
+    <div class="cred-band">
+      <div class="cred-line"></div>
+      <div class="cred-item">Édité par NRCI</div>
+      <div class="cred-dot"></div>
+      <div class="cred-item">Certifié Qualiopi</div>
+      <div class="cred-dot"></div>
+      <div class="cred-item">Partenaire ANADER</div>
+      <div class="cred-line"></div>
+    </div>
+
+    <h1 class="a-h1">
+      La souveraineté alimentaire<br>africaine commence ici.
+    </h1>
+    <p class="a-sub">
+      Daki Farm digitalise la formation agricole à l'échelle du continent -
+      <strong>gratuitement</strong>, en 15+ langues africaines,
+      avec <strong>1 million d'agriculteurs</strong> accessibles via ANADER en Côte d'Ivoire.
+    </p>
+    <div class="cta-row" style="justify-content:center">
+      <button class="btn-p">Découvrir nos solutions &rarr;</button>
+      <button class="btn-s">Devenir partenaire institutionnel</button>
+    </div>
+
+    <div class="scroll-cue">
+      <span>Découvrir</span>
+      <div class="chevron"></div>
+    </div>
+    <div class="concept-label">Concept A - « Souveraineté alimentaire »</div>
+  </div>
+
+  <!-- ── CONCEPT B ───────────────────────────────── -->
+  <div class="panel" id="pb">
+    <div class="pb-split">
+
+      <!-- Photo side -->
+      <div class="pb-photo">
+        <svg class="pb-silhouette" viewBox="0 0 180 360" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Hat brim -->
+          <ellipse cx="90" cy="28" rx="88" ry="14" fill="#84B843"/>
+          <!-- Hat dome -->
+          <ellipse cx="90" cy="16" rx="52" ry="22" fill="#84B843"/>
+          <!-- Head -->
+          <ellipse cx="90" cy="62" rx="34" ry="38" fill="#84B843"/>
+          <!-- Neck -->
+          <rect x="77" y="96" width="26" height="16" rx="4" fill="#84B843"/>
+          <!-- Body torso -->
+          <path d="M 38 112 C 32 170 30 230 32 290 L 65 290 L 76 210 L 90 250 L 104 210 L 115 290 L 148 290 C 150 230 148 170 142 112 C 130 106 118 102 90 102 C 62 102 50 106 38 112Z" fill="#84B843"/>
+          <!-- Left arm -->
+          <path d="M 38 115 C 18 145 8 185 10 215 L 34 210 C 36 188 44 162 55 140Z" fill="#84B843"/>
+          <!-- Right arm holding phone -->
+          <path d="M 142 115 C 162 138 170 168 165 200 L 142 200 C 140 178 138 155 132 138Z" fill="#84B843"/>
+          <!-- Phone -->
+          <rect x="148" y="170" width="26" height="42" rx="4" fill="#84B843"/>
+          <rect x="151" y="173" width="20" height="32" rx="2" fill="rgba(132,184,67,0.3)"/>
+        </svg>
+        <div class="pb-photo-label">
+          <p>📷 Photo agriculteur terrain HD<br>à intégrer en production</p>
+        </div>
+        <div class="pb-photo-fade"></div>
+      </div>
+
+      <!-- Text side -->
+      <div class="pb-text">
+        <div class="cred-band">
+          <div class="cred-item">Édité par NRCI</div>
+          <div class="cred-dot"></div>
+          <div class="cred-item">Partenaire ANADER</div>
+        </div>
+        <h1 class="b-h1">
+          Un agronome dans la poche<br>de <span>chaque agriculteur.</span>
+        </h1>
+        <p class="b-sub">
+          6 services agricoles intégrés. 15+ langues africaines. Gratuit.<br>
+          Déployé avec ANADER auprès de <strong>1M+ agriculteurs</strong> en Côte d'Ivoire.<br>
+          Potentiel de <strong>6M+ agriculteurs</strong> à 24 mois.
+        </p>
+        <div class="cta-row">
+          <button class="btn-p">Voir nos services &rarr;</button>
+          <button class="btn-s">Devenir partenaire</button>
+        </div>
+      </div>
+
+    </div><!-- /pb-split -->
+
+    <!-- KPI bar -->
+    <div class="pb-kpi">
+      <div class="kpi-item">
+        <span class="kpi-num">1M+</span>
+        <span class="kpi-lbl">Agriculteurs accessibles</span>
+      </div>
+      <div class="kpi-sep"></div>
+      <div class="kpi-item">
+        <span class="kpi-num">1 000+</span>
+        <span class="kpi-lbl">Capsules vidéo</span>
+      </div>
+      <div class="kpi-sep"></div>
+      <div class="kpi-item">
+        <span class="kpi-num">15+</span>
+        <span class="kpi-lbl">Langues africaines</span>
+      </div>
+      <div class="kpi-sep"></div>
+      <div class="kpi-item">
+        <span class="kpi-num">6</span>
+        <span class="kpi-lbl">Services intégrés</span>
+      </div>
+      <div class="kpi-sep"></div>
+      <div class="kpi-item">
+        <span class="kpi-num">6M+</span>
+        <span class="kpi-lbl">Potentiel 24 mois</span>
+      </div>
+    </div>
+
+    <div class="concept-label">Concept B - « Un agronome dans chaque poche »</div>
+  </div>
+
+  <!-- ── CONCEPT C ───────────────────────────────── -->
+  <div class="panel" id="pc">
+
+    <!-- Africa map with animated dots -->
+    <div class="africa-wrap">
+      <svg viewBox="0 0 400 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Continent fill -->
+        <path d="
+          M 148,22 C 176,14 218,14 252,22 L 298,40 330,65 354,98
+          C 368,124 376,154 372,180 L 364,202 350,216
+          C 358,224 372,238 374,252 L 364,274 348,288
+          C 342,302 338,318 334,334 L 320,366 297,394 266,418
+          C 240,436 208,446 177,447 C 147,447 118,435 93,418
+          L 66,394 46,366 C 30,342 24,314 26,288
+          L 30,262 42,244 C 48,232 46,220 42,206
+          L 36,183 34,158 C 34,128 44,96 62,72
+          L 84,48 110,30 Z
+        " fill="rgba(132,184,67,0.07)" stroke="rgba(132,184,67,0.22)" stroke-width="1.5"/>
+
+        <!-- === ACTIVE DOTS === -->
+        <!-- Côte d'Ivoire ~(108,270) -->
+        <g>
+          <circle class="dot-ring" cx="108" cy="270" r="5" fill="none" stroke="#84B843" stroke-width="1.5"/>
+          <circle class="dot-core" cx="108" cy="270" r="5" fill="#84B843"/>
+        </g>
+        <!-- Togo ~(132,264) -->
+        <g>
+          <circle class="dot-ring" cx="132" cy="264" r="5" fill="none" stroke="#84B843" stroke-width="1.5" style="animation-delay:.9s"/>
+          <circle class="dot-core" cx="132" cy="264" r="5" fill="#84B843" style="animation-delay:.9s"/>
+        </g>
+        <!-- Morocco ~(138,38) -->
+        <g>
+          <circle class="dot-ring" cx="138" cy="38" r="5" fill="none" stroke="#C9A84C" stroke-width="1.5" style="animation-delay:1.7s"/>
+          <circle class="dot-core" cx="138" cy="38" r="5" fill="#C9A84C" style="animation-delay:1.7s"/>
+        </g>
+        <!-- Nigeria ~(162,252) -->
+        <g>
+          <circle class="dot-ring" cx="162" cy="252" r="4" fill="none" stroke="#84B843" stroke-width="1.5" style="animation-delay:.4s;opacity:.65"/>
+          <circle class="dot-core" cx="162" cy="252" r="4" fill="#84B843" style="opacity:.65"/>
+        </g>
+        <!-- Senegal ~(68,192) -->
+        <g>
+          <circle class="dot-ring" cx="68" cy="192" r="4" fill="none" stroke="#84B843" stroke-width="1.5" style="animation-delay:1.3s;opacity:.5"/>
+          <circle class="dot-core" cx="68" cy="192" r="4" fill="#84B843" style="opacity:.5"/>
+        </g>
+
+        <!-- Faint connection lines between active points -->
+        <line x1="108" y1="270" x2="132" y2="264" stroke="rgba(132,184,67,0.18)" stroke-width="1" stroke-dasharray="3,4"/>
+        <line x1="132" y1="264" x2="162" y2="252" stroke="rgba(132,184,67,0.12)" stroke-width="1" stroke-dasharray="3,4"/>
+        <line x1="68"  y1="192" x2="108" y2="270" stroke="rgba(132,184,67,0.10)" stroke-width="1" stroke-dasharray="3,4"/>
+        <line x1="138" y1="38"  x2="68"  y2="192" stroke="rgba(201,168,76,0.14)" stroke-width="1" stroke-dasharray="3,4"/>
+      </svg>
+    </div>
+
+    <!-- Content -->
+    <div class="c-badges">
+      <div class="c-badge hi">Édité par NRCI</div>
+      <div class="c-badge hi">Certifié Qualiopi</div>
+      <div class="c-badge">Partenaire ANADER</div>
+      <div class="c-badge">Finaliste Challenge App Afrique</div>
+    </div>
+
+    <h1 class="c-h1">
+      Des services agricoles <span>gratuits</span><br>pour une Afrique résiliente.
+    </h1>
+    <p class="c-sub">
+      La super-application qui met l'intelligence agronomique
+      au service des agriculteurs africains.<br>
+      <strong>1M+ agriculteurs accessibles.</strong> 6 services intégrés. Un écosystème numérique.
+    </p>
+    <div class="cta-row" style="justify-content:center">
+      <button class="btn-p">Découvrir l'écosystème &rarr;</button>
+      <button class="btn-s">Partenariats institutionnels</button>
+    </div>
+
+    <!-- Partners strip -->
+    <div class="c-strip">
+      <span class="strip-lbl">Avec le soutien de</span>
+      <span class="strip-name">ANADER</span>
+      <div class="strip-sep"></div>
+      <span class="strip-name">République du Togo</span>
+      <div class="strip-sep"></div>
+      <span class="strip-name">Qualiopi</span>
+      <div class="strip-sep"></div>
+      <span class="strip-name">RFI · France 24</span>
+    </div>
+
+    <div class="concept-label">Concept C - « Carte &amp; Data »</div>
+  </div>
+
+</div><!-- /stage -->
+
+<script>
+  function show(id, btn) {
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('on'));
+    document.querySelectorAll('.tab').forEach(b => b.classList.remove('on'));
+    document.getElementById('p' + id).classList.add('on');
+    btn.classList.add('on');
+  }
+</script>
+</body>
+</html>

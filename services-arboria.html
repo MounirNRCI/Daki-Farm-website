@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Arbor'IA - Daki Farm</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--lime:#84B843;--lime-l:#A8D468;--dark:#1B3318;--ink:#0F1A0F;--w:#fff;--off:#F5F8F2;--muted:#687868;--border:#DDE8D3;--nav-h:72px}
+    html{scroll-behavior:smooth}
+    body{font-family:'DM Sans',sans-serif;background:#fff;color:var(--ink);overflow-x:hidden}
+    .wrap{max-width:1280px;margin:0 auto;padding:0 clamp(20px,5vw,80px)}
+    .eyebrow{display:block;font-weight:600;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--lime);margin-bottom:18px}
+    .r{opacity:0;transform:translateY(28px);transition:opacity .75s ease,transform .75s ease}
+    .r.in{opacity:1;transform:none}
+    .r2{transition-delay:.12s}.r3{transition-delay:.24s}.r4{transition-delay:.36s}
+    /* NAV */
+    .nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);z-index:100;display:flex;align-items:center;background:rgba(11,20,10,.88);backdrop-filter:blur(18px);border-bottom:1px solid rgba(255,255,255,.07)}
+    .nav-inner{width:100%;display:flex;align-items:center;justify-content:space-between;gap:32px}
+    .nav-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:20px;color:var(--w);text-decoration:none}
+    .nav-logo span{color:var(--lime)}
+    .nav-links{display:flex;align-items:center;gap:36px;list-style:none}
+    .nav-links a{font-size:13.5px;font-weight:500;color:rgba(255,255,255,.62);text-decoration:none;transition:color .2s}
+    .nav-links a:hover,.nav-links a.active{color:var(--w)}
+    .nav-cta{font-weight:600;font-size:13px;padding:10px 22px;border-radius:3px;background:var(--lime);color:var(--dark);border:none;cursor:pointer}
+    .nav-has-drop{position:relative}.nav-has-drop::after{content:"";position:absolute;top:100%;left:-20px;right:-20px;height:16px}
+    .nav-has-drop>a{display:flex;align-items:center;gap:5px}
+    .nav-caret{transition:transform .2s}
+    .nav-has-drop:hover .nav-caret{transform:rotate(180deg)}
+    .nav-drop{position:absolute;top:calc(100% + 14px);left:50%;transform:translateX(-50%) translateY(6px);background:rgba(7,16,5,.97);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,.08);width:500px;padding:8px;opacity:0;pointer-events:none;transition:opacity .18s,transform .18s;z-index:200}
+    .nav-has-drop:hover .nav-drop{opacity:1;pointer-events:all;transform:translateX(-50%) translateY(0)}
+    .nav-drop-grid{display:grid;grid-template-columns:1fr 1fr}
+    .nd{display:flex;align-items:flex-start;gap:12px;padding:13px 14px;text-decoration:none;border-radius:2px;transition:background .15s}
+    .nd:hover{background:rgba(255,255,255,.06)}
+    .nd-n{font-family:'Syne',sans-serif;font-weight:700;font-size:10px;letter-spacing:.12em;color:var(--lime);flex-shrink:0;padding-top:2px}
+    .nd-t{font-size:13px;font-weight:600;color:var(--w);display:block}
+    .nd-d{font-size:11px;color:rgba(255,255,255,.38);display:block;margin-top:3px;font-weight:300}
+    /* HERO */
+    .p-hero{position:relative;overflow:hidden;min-height:92vh;display:flex;align-items:flex-end}
+    .p-hero-bg{position:absolute;inset:0;z-index:0}
+    .p-hero-bg video{width:100%;height:100%;object-fit:cover;display:block}
+    .p-hero-bg::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(4,10,3,.96) 0%,rgba(4,10,3,.65) 35%,rgba(4,10,3,.2) 65%,transparent 100%),linear-gradient(to right,rgba(4,10,3,.5) 0%,transparent 55%)}
+    .p-hero-inner{position:relative;z-index:2;padding:var(--nav-h) 0 80px;max-width:680px}
+    .p-breadcrumb{font-size:12px;color:rgba(255,255,255,.35);margin-bottom:24px;letter-spacing:.04em}
+    .p-breadcrumb a{color:rgba(255,255,255,.35);text-decoration:none}
+    .p-breadcrumb a:hover{color:var(--lime-l)}
+    .p-num{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(64px,8vw,120px);line-height:1;color:rgba(132,184,67,.1);letter-spacing:-.05em;margin-bottom:-16px}
+    .p-h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(32px,4vw,62px);line-height:1.02;color:var(--w);letter-spacing:-.04em;margin-bottom:24px}
+    .p-h1 em{font-style:normal;color:var(--lime-l)}
+    .p-lead{font-size:clamp(14px,1.4vw,17px);font-weight:300;line-height:1.8;color:rgba(255,255,255,.52);margin-bottom:36px;max-width:520px}
+    .p-badge{display:inline-flex;align-items:center;gap:8px;padding:9px 18px;border:1px solid rgba(132,184,67,.3);border-radius:2px;font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--lime);backdrop-filter:blur(6px);background:rgba(255,255,255,.04)}
+    /* SOLUTION */
+    .p-solution{padding:104px 0;background:var(--w)}
+    .sol-layout{display:grid;grid-template-columns:1fr 1fr;gap:96px;align-items:center}
+    .sol-h2{font-family:'Syne',sans-serif;font-weight:700;font-size:clamp(24px,2.6vw,38px);color:var(--ink);letter-spacing:-.03em;line-height:1.1;margin-bottom:24px}
+    .sol-h2 em{font-style:normal;color:var(--lime)}
+    .sol-body{font-size:15px;font-weight:300;line-height:1.85;color:var(--muted)}
+    .sol-body p+p{margin-top:18px}
+    .sol-body strong{color:var(--ink);font-weight:500}
+    .sol-callout{margin:28px 0;padding:20px 24px 20px 20px;border-left:3px solid var(--lime);background:var(--off)}
+    .sol-callout-txt{font-family:'Syne',sans-serif;font-weight:700;font-size:clamp(16px,1.6vw,21px);color:var(--ink);line-height:1.4;letter-spacing:-.025em}
+    .sol-toggle{margin:28px 0}
+    .sol-tabs{display:flex;border:1px solid var(--border);width:fit-content;overflow:hidden;border-radius:3px;margin-bottom:0;position:relative}
+    .sol-tab{padding:11px 26px;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;background:transparent;border:none;cursor:pointer;color:var(--muted);transition:background .25s,color .25s;position:relative}
+    .sol-tab.active[data-tab="avant"]{background:var(--ink);color:var(--w)}
+    .sol-tab.active[data-tab="apres"]{background:var(--lime);color:var(--dark)}
+    .sol-tab[data-tab="apres"]:not(.active)::after{content:'';position:absolute;top:50%;right:12px;transform:translateY(-50%);width:6px;height:6px;border-radius:50%;background:var(--lime);animation:tabPulse 1.8s ease-in-out infinite}
+    @keyframes tabPulse{0%,100%{opacity:.4;transform:translateY(-50%) scale(1)}50%{opacity:1;transform:translateY(-50%) scale(1.3)}}
+    .sol-progress{height:2px;background:var(--border);overflow:hidden;width:100%}
+    .sol-progress-fill{height:100%;width:0;background:var(--lime);transition:width linear}
+    .sol-panel{display:none;border:1px solid var(--border);border-top:none;animation:panelIn .3s ease}
+    .sol-panel.active{display:block}
+    @keyframes panelIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+    .sol-list{list-style:none;padding:0;margin:0}
+    .sol-list li{font-size:13px;font-weight:300;color:var(--muted);line-height:1.65;padding:13px 20px;border-bottom:1px solid var(--border);display:flex;gap:12px;align-items:flex-start;transition:background .2s}
+    .sol-list.good li:hover{background:rgba(132,184,67,.04)}
+    .sol-list li:last-child{border-bottom:none}
+    .sol-bullet{flex-shrink:0;width:8px;height:8px;border-radius:50%;margin-top:6px}
+    .sol-list.bad .sol-bullet{background:rgba(200,60,60,.45)}
+    .sol-list.good .sol-bullet{background:var(--lime)}
+    .sol-img{height:400px;overflow:hidden}
+    .sol-img video{width:100%;height:100%;object-fit:cover;display:block}
+    /* FEATURES */
+    .p-features{padding:96px 0;background:var(--off)}
+    .feat-h2{font-family:'Syne',sans-serif;font-weight:700;font-size:clamp(24px,2.6vw,38px);color:var(--ink);letter-spacing:-.03em;margin-bottom:64px}
+    .feat-h2 em{font-style:normal;color:var(--lime)}
+    .feat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--border)}
+    .feat-item{padding:40px 32px;border-right:1px solid var(--border);position:relative}
+    .feat-item:last-child{border-right:none}
+    .feat-item::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--lime);transform:scaleX(0);transform-origin:left;transition:transform .3s}
+    .feat-item:hover::before{transform:scaleX(1)}
+    .feat-icon{width:44px;height:44px;border-radius:8px;background:rgba(132,184,67,.1);display:flex;align-items:center;justify-content:center;color:var(--lime);margin-bottom:20px}
+    .feat-icon svg{width:22px;height:22px}
+    .feat-title{font-family:'Syne',sans-serif;font-weight:700;font-size:16px;color:var(--ink);margin-bottom:10px}
+    .feat-desc{font-size:13px;font-weight:300;line-height:1.75;color:var(--muted)}
+    /* STEPS */
+    .p-steps{padding:104px 0;background:var(--dark)}
+    .steps-h2{font-family:'Syne',sans-serif;font-weight:700;font-size:clamp(24px,2.6vw,38px);color:var(--w);letter-spacing:-.03em;margin-bottom:64px}
+    .steps-h2 em{font-style:normal;color:var(--lime-l)}
+    .steps-list{display:grid;grid-template-columns:repeat(3,1fr);gap:0}
+    .step{padding:48px 40px;border-right:1px solid rgba(255,255,255,.07)}
+    .step:last-child{border-right:none}
+    .step-n{font-family:'Syne',sans-serif;font-weight:800;font-size:48px;color:rgba(132,184,67,.15);letter-spacing:-.04em;line-height:1;margin-bottom:20px}
+    .step-title{font-family:'Syne',sans-serif;font-weight:700;font-size:17px;color:var(--w);margin-bottom:12px}
+    .step-desc{font-size:13px;font-weight:300;line-height:1.75;color:rgba(255,255,255,.42)}
+    /* CTA */
+    .p-cta{background:var(--off);padding:96px 0;border-top:1px solid var(--border)}
+    .cta-inner{display:flex;align-items:center;justify-content:space-between;gap:48px;flex-wrap:wrap}
+    .cta-txt{font-family:'Syne',sans-serif;font-weight:700;font-size:clamp(22px,2.2vw,34px);color:var(--ink);line-height:1.2;max-width:480px}
+    .cta-txt em{font-style:normal;color:var(--lime)}
+    .cta-btns{display:flex;gap:12px;flex-wrap:wrap}
+    .btn-p{font-weight:600;font-size:14px;padding:14px 30px;border-radius:3px;background:var(--lime);color:var(--dark);border:none;cursor:pointer;transition:background .2s;text-decoration:none;display:inline-flex;align-items:center}
+    .btn-p:hover{background:var(--lime-l)}
+    .btn-o{font-weight:500;font-size:14px;padding:13px 30px;border-radius:3px;background:transparent;color:var(--ink);border:1.5px solid var(--border);cursor:pointer;transition:border-color .2s;text-decoration:none;display:inline-flex;align-items:center}
+    .btn-o:hover{border-color:var(--lime)}
+    @media(max-width:900px){.sol-layout,.feat-grid,.steps-list{grid-template-columns:1fr}.sol-img{height:240px}.feat-item{border-right:none;border-bottom:1px solid var(--border)}.step{border-right:none;border-bottom:1px solid rgba(255,255,255,.07)}.nav-links{display:none}}
+    /* ARBORIA PARCELLE DEMO */
+    .arb-dash{background:var(--ink);border-radius:4px;padding:44px 52px;margin-top:56px}
+    .arb-dash-hd{display:flex;align-items:center;gap:10px;margin-bottom:32px;padding-bottom:20px;border-bottom:1px solid rgba(255,255,255,.06)}
+    .arb-live-dot{width:8px;height:8px;border-radius:50%;background:var(--lime);display:inline-block;flex-shrink:0;animation:arbLivePulse 2s ease-in-out infinite}
+    @keyframes arbLivePulse{0%,100%{box-shadow:0 0 0 0 rgba(132,184,67,.5)}50%{box-shadow:0 0 0 6px rgba(132,184,67,0)}}
+    .arb-dash-body{display:grid;grid-template-columns:1.1fr 1fr;gap:40px;align-items:start}
+    .arb-map-label{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.25);margin-bottom:12px}
+    .arb-map-wrap{position:relative}
+    .arb-map-grid{display:grid;grid-template-columns:repeat(10,1fr);gap:3px}
+    .arb-cell{border-radius:2px;aspect-ratio:1;transition:background 1.2s ease}
+    .arb-scan{position:absolute;left:0;right:0;height:2px;background:linear-gradient(to right,transparent,rgba(132,184,67,.7),transparent);pointer-events:none;animation:arbScan 3s ease-in-out infinite}
+    @keyframes arbScan{0%{top:0;opacity:1}85%{top:100%;opacity:.3}100%{top:100%;opacity:0}}
+    .arb-legend{display:flex;gap:12px;flex-wrap:wrap;margin-top:14px}
+    .arb-leg-item{display:flex;align-items:center;gap:5px;font-size:10px;color:rgba(255,255,255,.3)}
+    .arb-leg-item span{width:10px;height:10px;border-radius:2px;display:inline-block;flex-shrink:0}
+    .arb-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px}
+    .arb-metric{background:rgba(255,255,255,.04);border-radius:3px;padding:14px 16px;border:1px solid rgba(255,255,255,.05)}
+    .arb-metric-val{font-family:'Syne',sans-serif;font-weight:700;font-size:22px;color:var(--lime);line-height:1}
+    .arb-metric-lbl{font-size:10px;color:rgba(255,255,255,.3);font-weight:500;letter-spacing:.07em;text-transform:uppercase;margin-top:5px}
+    .arb-alerts-hd{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.2);margin-bottom:10px}
+    .arb-alert{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;background:rgba(255,255,255,.03);border-radius:3px;margin-bottom:5px;animation:arbAlertIn .35s ease}
+    @keyframes arbAlertIn{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:none}}
+    .arb-alert-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;margin-top:5px}
+    .arb-alert-dot.warn{background:#E8A838}
+    .arb-alert-dot.ok{background:var(--lime)}
+    .arb-alert-dot.info{background:#5B9BD5}
+    .arb-alert-txt{font-size:12px;font-weight:400;color:rgba(255,255,255,.55);line-height:1.5}
+    .arb-alert-time{font-size:10px;color:rgba(255,255,255,.2);margin-top:2px}
+    .arb-zone-tag{display:inline-block;font-size:10px;font-weight:600;padding:1px 6px;border-radius:2px;margin-right:5px;font-family:'Syne',sans-serif}
+    .arb-zone-tag.warn{background:rgba(232,168,56,.15);color:#E8A838}
+    .arb-zone-tag.ok{background:rgba(132,184,67,.12);color:var(--lime)}
+    .arb-zone-tag.info{background:rgba(91,155,213,.12);color:#5B9BD5}
+    @media(max-width:900px){.arb-dash{padding:28px 20px}.arb-dash-body{grid-template-columns:1fr}.arb-metrics{grid-template-columns:repeat(3,1fr)}}
+  </style>
+</head>
+<body>
+<nav class="nav" id="nav">
+  <div class="wrap nav-inner">
+    <a href="home.html" class="nav-logo">Daki<span>Farm</span></a>
+    <ul class="nav-links">
+      <li><a href="qui-sommes-nous.html">Qui sommes-nous</a></li>
+      <li class="nav-has-drop"><a href="services.html" class="active">Services <svg class="nav-caret" width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <div class="nav-drop"><div class="nav-drop-grid">
+          <a href="services-elearning.html" class="nd"><span class="nd-n">01</span><div><span class="nd-t">e-learning</span><span class="nd-d">1 000+ capsules vidéo gratuites</span></div></a>
+          <a href="services-arboria.html" class="nd"><span class="nd-n">02</span><div><span class="nd-t">Arbor'IA</span><span class="nd-d">Gestion de parcelles satellite</span></div></a>
+          <a href="services-irrigation.html" class="nd"><span class="nd-n">03</span><div><span class="nd-t">Smart Irrigation</span><span class="nd-d">Irrigation sans capteur physique</span></div></a>
+          <a href="services-maladies.html" class="nd"><span class="nd-n">04</span><div><span class="nd-t">Détection maladies</span><span class="nd-d">Diagnostic IA en quelques secondes</span></div></a>
+          <a href="services-marketplace.html" class="nd"><span class="nd-n">05</span><div><span class="nd-t">Marketplace</span><span class="nd-d">Vente directe sans intermédiaire</span></div></a>
+          <a href="services-callcenter.html" class="nd"><span class="nd-n">06</span><div><span class="nd-t">Call Center ANADER</span><span class="nd-d">Interface humaine complémentaire</span></div></a>
+        </div></div>
+      </li>
+      <li><a href="impact.html">Impact</a></li>
+      <li><a href="nrci.html">NRCI</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <button class="nav-cta">Devenir partenaire</button>
+  </div>
+</nav>
+
+<section class="p-hero">
+  <div class="p-hero-bg">
+    <video autoplay muted loop playsinline>
+      <source src="https://videos.pexels.com/video-files/36246664/15371404_2560_1440_24fps.mp4" type="video/mp4">
+    </video>
+  </div>
+  <div class="wrap">
+    <div class="p-hero-inner">
+      <p class="p-breadcrumb"><a href="services.html">Services</a> / Arbor'IA</p>
+      <div class="p-num">02</div>
+      <h1 class="p-h1">Gérez votre parcelle<br><em>depuis l'espace.</em></h1>
+      <p class="p-lead">Imagerie satellite haute résolution, analyse des sols et suivi de végétation en temps réel - accessible depuis l'application Daki Farm, sans équipement terrain.</p>
+      <span class="p-badge">✦ Powered by satellite · Précision 10m</span>
+    </div>
+  </div>
+</section>
+
+<section class="p-solution">
+  <div class="wrap">
+    <div class="sol-layout r">
+      <div>
+        <span class="eyebrow">Le problème résolu</span>
+        <h2 class="sol-h2">L'agriculteur connaît son champ.<br><em>Pas ce qu'il se passe en dessous.</em></h2>
+        <div class="sol-body">
+          <p>Les décisions agronomiques les plus critiques - fertilisation, irrigation, traitements - reposent sur des données invisibles à l'œil nu. Avec ces données, l'agriculteur peut anticiper, agir au bon moment, et protéger ses rendements avant que les dégâts n'arrivent.</p>
+
+          <div class="sol-callout">
+            <span class="sol-callout-txt">Arbor'IA inverse cette logique : en renforçant la capacité de chaque agriculteur à lire et comprendre son propre terrain.</span>
+          </div>
+
+          <div class="sol-toggle">
+            <div class="sol-tabs">
+              <button class="sol-tab" data-tab="avant">Sans Arbor'IA</button>
+              <button class="sol-tab active" data-tab="apres">Avec Arbor'IA</button>
+            </div>
+            <div class="sol-progress"><div class="sol-progress-fill" id="solProgress"></div></div>
+            <div class="sol-panel" id="panel-avant">
+              <ul class="sol-list bad">
+                <li><span class="sol-bullet"></span>L'agriculteur réagit après les premiers symptômes visibles</li>
+                <li><span class="sol-bullet"></span>Décisions de fertilisation et d'irrigation prises à l'aveugle</li>
+                <li><span class="sol-bullet"></span>Traitements tardifs - les pertes sont souvent irréversibles</li>
+                <li><span class="sol-bullet"></span>Dépendance aux conseils extérieurs, coûteux ou indisponibles</li>
+              </ul>
+            </div>
+            <div class="sol-panel active" id="panel-apres">
+              <ul class="sol-list good">
+                <li><span class="sol-bullet"></span>Alertes de stress détectées <strong>7 à 14 jours avant les symptômes</strong></li>
+                <li><span class="sol-bullet"></span>Carte de santé parcellaire mise à jour toutes les 5 jours</li>
+                <li><span class="sol-bullet"></span>Recommandations concrètes dans la langue de l'agriculteur</li>
+                <li><span class="sol-bullet"></span>Prévenir plutôt que subir - capacités renforcées, rendements préservés</li>
+              </ul>
+            </div>
+          </div>
+
+          <p>Arbor'IA agrège des images satellites Sentinel-2 et Landsat pour fournir une <strong>carte de santé de chaque parcelle</strong> : indice NDVI, taux d'humidité du sol, anomalies de croissance détectées automatiquement.</p>
+          <p>Renforcer les capacités ne signifie pas complexifier : ça signifie mettre le bon savoir, au bon moment, entre les bonnes mains.</p>
+        </div>
+      </div>
+      <div class="sol-img">
+        <video autoplay muted loop playsinline>
+          <source src="https://videos.pexels.com/video-files/20521965/20521965-uhd_2560_1440_24fps.mp4" type="video/mp4">
+        </video>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="p-features">
+  <div class="wrap">
+    <h2 class="feat-h2 r">Ce que propose<br><em>le service.</em></h2>
+    <div class="feat-grid r r2">
+      <div class="feat-item">
+        <div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
+        <div class="feat-title">Imagerie satellite NDVI</div>
+        <p class="feat-desc">Indice de végétation mis à jour toutes les 5 jours. Visualisation couleur de la santé des cultures sur l'ensemble de la parcelle, zone par zone.</p>
+      </div>
+      <div class="feat-item">
+        <div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 22V12M12 12C12 6.48 7.52 2 2 2M12 12c0-5.52 4.48-10 10-10"/><circle cx="12" cy="12" r="3"/></svg></div>
+        <div class="feat-title">Analyse des sols</div>
+        <p class="feat-desc">Estimation de la teneur en matière organique, pH et capacité de rétention hydrique à partir des signatures spectrales satellitaires et des données terrain agrégées.</p>
+      </div>
+      <div class="feat-item">
+        <div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
+        <div class="feat-title">Alertes de stress précoce</div>
+        <p class="feat-desc">Détection automatique des zones en stress hydrique ou thermique avant que les symptômes ne soient visibles. Intervention possible 7 à 14 jours plus tôt.</p>
+      </div>
+      <div class="feat-item">
+        <div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
+        <div class="feat-title">Suivi multi-parcelles</div>
+        <p class="feat-desc">Gérez plusieurs champs depuis une seule interface. Idéal pour les coopératives et institutions supervisant des centaines ou milliers d'exploitations.</p>
+      </div>
+    </div>
+
+    <!-- PARCELLE LIVE DEMO -->
+    <div class="arb-dash r r3">
+      <div class="arb-dash-hd">
+        <span class="arb-live-dot"></span>
+        <span style="font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.3)">Arbor'IA</span>
+        <span style="font-size:11px;color:rgba(255,255,255,.15)">·</span>
+        <span style="font-size:13px;font-weight:500;color:rgba(255,255,255,.5)">Tableau de bord parcelle en temps réel</span>
+        <span style="margin-left:auto;font-size:10px;font-weight:600;letter-spacing:.1em;color:var(--lime);background:rgba(132,184,67,.1);padding:4px 10px;border-radius:2px">LIVE</span>
+      </div>
+      <div class="arb-dash-body">
+        <div class="arb-map-wrap">
+          <div class="arb-map-label">Parcelle Korhogo-Nord · Indice NDVI</div>
+          <div class="arb-map-grid" id="ndviGrid"></div>
+          <div class="arb-scan"></div>
+          <div class="arb-legend">
+            <div class="arb-leg-item"><span style="background:#2A6820"></span>Excellent</div>
+            <div class="arb-leg-item"><span style="background:#84B843"></span>Bon</div>
+            <div class="arb-leg-item"><span style="background:#C8B820"></span>Modéré</div>
+            <div class="arb-leg-item"><span style="background:#E8773A"></span>Stress</div>
+            <div class="arb-leg-item"><span style="background:#C43030"></span>Critique</div>
+          </div>
+        </div>
+        <div>
+          <div class="arb-metrics">
+            <div class="arb-metric">
+              <div class="arb-metric-val" id="arbNdvi">0.71</div>
+              <div class="arb-metric-lbl">NDVI moyen</div>
+            </div>
+            <div class="arb-metric">
+              <div class="arb-metric-val" id="arbHum">62<span style="font-size:14px;color:rgba(255,255,255,.4)">%</span></div>
+              <div class="arb-metric-lbl">Humidité sol</div>
+            </div>
+            <div class="arb-metric">
+              <div class="arb-metric-val" id="arbTemp">33<span style="font-size:14px;color:rgba(255,255,255,.4)">°C</span></div>
+              <div class="arb-metric-lbl">Temp. surface</div>
+            </div>
+          </div>
+          <div class="arb-alerts-hd">Journal d'alertes</div>
+          <div id="arbAlertFeed"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section class="p-steps">
+  <div class="wrap">
+    <h2 class="steps-h2 r">Comment ça <em>marche.</em></h2>
+    <div class="steps-list r r2">
+      <div class="step">
+        <div class="step-n">01</div>
+        <div class="step-title">Délimitez votre parcelle</div>
+        <p class="step-desc">Tracez les contours de votre champ directement sur la carte dans l'application. Aucun équipement GPS supplémentaire requis - votre téléphone suffit.</p>
+      </div>
+      <div class="step">
+        <div class="step-n">02</div>
+        <div class="step-title">Consultez votre tableau de bord</div>
+        <p class="step-desc">Accédez à la carte de santé de votre parcelle mise à jour automatiquement. Les zones à risque sont signalées en rouge, les zones saines en vert.</p>
+      </div>
+      <div class="step">
+        <div class="step-n">03</div>
+        <div class="step-title">Recevez vos recommandations</div>
+        <p class="step-desc">L'IA traduit les données satellite en actions concrètes : "irriguez la zone nord-est cette semaine", "apportez de l'azote sur le tiers est de la parcelle".</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="p-cta">
+  <div class="wrap">
+    <div class="cta-inner r">
+      <p class="cta-txt">Déployer Arbor'IA<br><em>sur votre territoire ?</em></p>
+      <div class="cta-btns">
+        <a href="contact.html" class="btn-p">Demander une démonstration →</a>
+        <a href="devenir-partenaire.html" class="btn-o">Devenir partenaire institutionnel</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  const io = new IntersectionObserver(e => e.forEach(x => { if(x.isIntersecting) x.target.classList.add('in'); }), {threshold:.07});
+  document.querySelectorAll('.r').forEach(el => io.observe(el));
+
+  const CYCLE_MS = 4000;
+  const tabs = ['apres', 'avant'];
+  let cycleIdx = 0, cycleTimer, paused = false;
+  const fill = document.getElementById('solProgress');
+
+  function activate(tabId) {
+    document.querySelectorAll('.sol-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.sol-panel').forEach(p => p.classList.remove('active'));
+    document.querySelector(`.sol-tab[data-tab="${tabId}"]`).classList.add('active');
+    document.getElementById('panel-' + tabId).classList.add('active');
+    if (fill) {
+      fill.style.transition = 'none'; fill.style.width = '0%';
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        fill.style.transition = `width ${CYCLE_MS}ms linear`;
+        fill.style.width = '100%';
+      }));
+    }
+  }
+
+  function startCycle() {
+    clearInterval(cycleTimer);
+    cycleTimer = setInterval(() => {
+      if (paused) return;
+      cycleIdx = (cycleIdx + 1) % tabs.length;
+      activate(tabs[cycleIdx]);
+    }, CYCLE_MS);
+  }
+
+  activate(tabs[0]);
+  startCycle();
+
+  document.querySelectorAll('.sol-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      cycleIdx = tabs.indexOf(tab.dataset.tab);
+      activate(tab.dataset.tab);
+      startCycle();
+    });
+  });
+
+  const toggle = document.querySelector('.sol-toggle');
+  if (toggle) {
+    toggle.addEventListener('mouseenter', () => { paused = true; });
+    toggle.addEventListener('mouseleave', () => { paused = false; });
+  }
+</script>
+<script>
+(function(){
+  const CELLS = [
+    0,0,0,0.72,0.78,0.82,0,0,0,0,
+    0,0,0.68,0.75,0.81,0.79,0.74,0,0,0,
+    0,0.65,0.71,0.77,0.82,0.85,0.80,0.73,0,0,
+    0,0.70,0.75,0.80,0.84,0.87,0.83,0.76,0.69,0,
+    0,0.68,0.73,0.78,0.82,0.85,0.81,0.75,0.68,0,
+    0,0.63,0.69,0.74,0.78,0.80,0.41,0.32,0.55,0,
+    0,0,0.62,0.68,0.72,0.75,0.27,0.22,0,0,
+    0,0,0,0.63,0.67,0.70,0.62,0,0,0
+  ];
+  function ndviColor(v){
+    if(!v) return 'rgba(255,255,255,0.04)';
+    if(v>=0.75) return '#2A6820';
+    if(v>=0.60) return '#5F8B30';
+    if(v>=0.45) return '#84B843';
+    if(v>=0.35) return '#C8B820';
+    if(v>=0.25) return '#E8773A';
+    return '#C43030';
+  }
+  const grid = document.getElementById('ndviGrid');
+  if(!grid) return;
+  const divs = CELLS.map((v,i) => {
+    const d = document.createElement('div');
+    d.className = 'arb-cell';
+    d.style.background = ndviColor(v);
+    if(v>0) d.title = 'NDVI ' + v.toFixed(2);
+    grid.appendChild(d);
+    return {el:d, base:v};
+  });
+
+  const ALERTS = [
+    {type:'warn', zone:'Zone NE', msg:'Stress hydrique détecté · NDVI 0.27',  time:'2 min'},
+    {type:'warn', zone:'Zone E',  msg:'Température surface 41°C · seuil dépassé', time:'6 min'},
+    {type:'ok',   zone:'Zone SO', msg:'Végétation en bonne santé · NDVI 0.84', time:'9 min'},
+    {type:'info', zone:'Global',  msg:'Image Sentinel-2 actualisée · J-5',     time:'12 min'},
+    {type:'warn', zone:'Zone SE', msg:'Humidité sol faible · 38%',              time:'15 min'},
+    {type:'ok',   zone:'Zone O',  msg:'Récupération détectée · NDVI +0.06',    time:'19 min'},
+    {type:'info', zone:'Global',  msg:'Rapport mensuel généré · 14 parcelles', time:'23 min'},
+    {type:'warn', zone:'Zone NE', msg:'Anomalie croissance · intervention conseillée', time:'28 min'},
+  ];
+  let alertIdx = 4;
+  const feed = document.getElementById('arbAlertFeed');
+
+  function renderAlert(a){
+    const d = document.createElement('div');
+    d.className = 'arb-alert';
+    d.innerHTML = '<span class="arb-alert-dot '+a.type+'"></span><div><div class="arb-alert-txt"><span class="arb-zone-tag '+a.type+'">'+a.zone+'</span>'+a.msg+'</div><div class="arb-alert-time">il y a '+a.time+'</div></div>';
+    return d;
+  }
+  [3,2,1,0].forEach(i => feed.appendChild(renderAlert(ALERTS[i])));
+
+  setInterval(function(){
+    const a = ALERTS[alertIdx % ALERTS.length];
+    alertIdx++;
+    feed.insertBefore(renderAlert(a), feed.firstChild);
+    while(feed.children.length > 4) feed.removeChild(feed.lastChild);
+  }, 4500);
+
+  const ndviEl = document.getElementById('arbNdvi');
+  const humEl  = document.getElementById('arbHum');
+  const tempEl = document.getElementById('arbTemp');
+  let tick = 0;
+  setInterval(function(){
+    tick++;
+    if(ndviEl) ndviEl.textContent = (0.71 + Math.sin(tick*.4)*.01).toFixed(2);
+    if(humEl)  humEl.innerHTML = Math.round(62+Math.sin(tick*.3)*2)+'<span style="font-size:14px;color:rgba(255,255,255,.4)">%</span>';
+    if(tempEl) tempEl.innerHTML = Math.round(33+Math.sin(tick*.5)*1)+'<span style="font-size:14px;color:rgba(255,255,255,.4)">°C</span>';
+    divs.forEach(({el,base}) => {
+      if(!base) return;
+      const jitter = (Math.random()-.5)*.025;
+      el.style.background = ndviColor(Math.max(0.01, Math.min(0.95, base+jitter)));
+    });
+  }, 3200);
+})();
+</script>
+</body>
+</html>

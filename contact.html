@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact - Daki Farm</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--lime:#84B843;--lime-l:#A8D468;--dark:#1B3318;--ink:#0F1A0F;--w:#fff;--off:#F5F8F2;--muted:#687868;--border:#DDE8D3;--nav-h:72px}
+    html{scroll-behavior:smooth}
+    body{font-family:'DM Sans',sans-serif;background:#fff;color:var(--ink);overflow-x:hidden}
+    .wrap{max-width:1280px;margin:0 auto;padding:0 clamp(20px,5vw,80px)}
+    .eyebrow{display:block;font-weight:600;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--lime);margin-bottom:18px}
+    .r{opacity:0;transform:translateY(28px);transition:opacity .75s ease,transform .75s ease}
+    .r.in{opacity:1;transform:none}
+    .r2{transition-delay:.12s}.r3{transition-delay:.24s}.r4{transition-delay:.36s}
+
+    /* NAV */
+    .nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);z-index:100;display:flex;align-items:center;background:rgba(11,20,10,.88);backdrop-filter:blur(18px);border-bottom:1px solid rgba(255,255,255,.07)}
+    .nav-inner{width:100%;display:flex;align-items:center;justify-content:space-between;gap:32px}
+    .nav-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:20px;color:var(--w);text-decoration:none}
+    .nav-logo span{color:var(--lime)}
+    .nav-links{display:flex;align-items:center;gap:36px;list-style:none}
+    .nav-links a{font-size:13.5px;font-weight:500;color:rgba(255,255,255,.62);text-decoration:none;transition:color .2s}
+    .nav-links a:hover,.nav-links a.active{color:var(--w)}
+    .nav-cta{font-weight:600;font-size:13px;padding:10px 22px;border-radius:3px;background:var(--lime);color:var(--dark);border:none;cursor:pointer;transition:background .2s;text-decoration:none;display:inline-flex}
+    .nav-cta:hover{background:var(--lime-l)}
+    .nav-has-drop{position:relative}.nav-has-drop::after{content:"";position:absolute;top:100%;left:-20px;right:-20px;height:16px}
+    .nav-has-drop>a{display:flex;align-items:center;gap:5px}
+    .nav-caret{transition:transform .2s}
+    .nav-has-drop:hover .nav-caret{transform:rotate(180deg)}
+    .nav-drop{position:absolute;top:calc(100% + 14px);left:50%;transform:translateX(-50%) translateY(6px);background:rgba(7,16,5,.97);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,.08);width:500px;padding:8px;opacity:0;pointer-events:none;transition:opacity .18s,transform .18s;z-index:200}
+    .nav-has-drop:hover .nav-drop{opacity:1;pointer-events:all;transform:translateX(-50%) translateY(0)}
+    .nav-drop-grid{display:grid;grid-template-columns:1fr 1fr}
+    .nd{display:flex;align-items:flex-start;gap:12px;padding:13px 14px;text-decoration:none;border-radius:2px;transition:background .15s}
+    .nd:hover{background:rgba(255,255,255,.06)}
+    .nd-n{font-family:'Syne',sans-serif;font-weight:700;font-size:10px;letter-spacing:.12em;color:var(--lime);flex-shrink:0;padding-top:2px}
+    .nd-t{font-size:13px;font-weight:600;color:var(--w);display:block}
+    .nd-d{font-size:11px;color:rgba(255,255,255,.38);display:block;margin-top:3px;font-weight:300}
+
+    /* HERO */
+    .ct-hero{background:var(--ink);padding:calc(var(--nav-h) + 80px) 0 96px;position:relative;overflow:hidden}
+    .ct-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 80% 30%,rgba(132,184,67,.15) 0%,transparent 45%)}
+    .ct-hero-inner{position:relative;z-index:2;display:grid;grid-template-columns:1fr 1fr;gap:96px;align-items:end}
+    .ct-h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(40px,5vw,72px);line-height:.96;color:var(--w);letter-spacing:-.05em;margin-bottom:24px}
+    .ct-h1 em{font-style:normal;color:var(--lime-l)}
+    .ct-lead{font-size:clamp(14px,1.4vw,17px);font-weight:300;line-height:1.8;color:rgba(255,255,255,.45)}
+    .ct-offices{display:flex;flex-direction:column;gap:2px}
+    .ct-office{padding:24px 28px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);display:flex;gap:20px;align-items:flex-start}
+    .ct-office-dot{width:8px;height:8px;border-radius:50%;background:var(--lime);flex-shrink:0;margin-top:5px}
+    .ct-office-city{font-family:'Syne',sans-serif;font-weight:700;font-size:15px;color:var(--w);margin-bottom:4px}
+    .ct-office-role{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--lime);margin-bottom:8px;display:block}
+    .ct-office-addr{font-size:13px;font-weight:300;color:rgba(255,255,255,.38);line-height:1.6}
+
+    /* MAIN */
+    .ct-main{padding:96px 0;background:var(--w)}
+    .ct-layout{display:grid;grid-template-columns:1fr 1fr;gap:96px;align-items:start}
+
+    /* FORM */
+    .ct-form-h2{font-family:'Syne',sans-serif;font-weight:700;font-size:clamp(24px,2.4vw,36px);color:var(--ink);letter-spacing:-.03em;line-height:1.1;margin-bottom:8px}
+    .ct-form-h2 em{font-style:normal;color:var(--lime)}
+    .ct-form-sub{font-size:14px;font-weight:300;color:var(--muted);line-height:1.7;margin-bottom:36px}
+    form.ct-form-el{display:flex;flex-direction:column;gap:18px}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .form-group{display:flex;flex-direction:column;gap:6px}
+    .form-group label{font-size:11px;font-weight:600;color:var(--ink);letter-spacing:.08em;text-transform:uppercase}
+    .form-group input,.form-group select,.form-group textarea{padding:13px 16px;border:1.5px solid var(--border);border-radius:3px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:300;color:var(--ink);background:var(--w);transition:border-color .2s;outline:none;width:100%}
+    .form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--lime)}
+    .form-group textarea{resize:vertical;min-height:100px}
+    .form-group select{appearance:none;cursor:pointer}
+    .form-submit{padding:15px 32px;background:var(--lime);color:var(--dark);border:none;border-radius:3px;font-family:'DM Sans',sans-serif;font-weight:600;font-size:14px;cursor:pointer;transition:background .2s;align-self:flex-start}
+    .form-submit:hover{background:var(--lime-l)}
+    .form-note{font-size:11px;font-weight:300;color:var(--muted)}
+
+    /* SIDEBAR */
+    .ct-sidebar{display:flex;flex-direction:column;gap:32px}
+    .ct-contact-block{padding:32px;background:var(--off);border:1px solid var(--border)}
+    .ct-contact-label{font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:20px;display:block}
+    .ct-contact-items{display:flex;flex-direction:column;gap:16px}
+    .ct-contact-item{display:flex;align-items:flex-start;gap:14px}
+    .ct-contact-icon{width:36px;height:36px;background:rgba(132,184,67,.1);border-radius:6px;display:flex;align-items:center;justify-content:center;color:var(--lime);flex-shrink:0}
+    .ct-contact-icon svg{width:17px;height:17px}
+    .ct-contact-title{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:3px}
+    .ct-contact-val{font-size:14px;font-weight:400;color:var(--ink)}
+    .ct-contact-val a{color:var(--ink);text-decoration:none}
+    .ct-contact-val a:hover{color:var(--lime)}
+    .ct-response-block{padding:28px 32px;background:var(--dark);display:flex;gap:16px;align-items:flex-start}
+    .ct-response-icon{width:40px;height:40px;background:rgba(132,184,67,.12);border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--lime-l);flex-shrink:0}
+    .ct-response-icon svg{width:20px;height:20px}
+    .ct-response-title{font-family:'Syne',sans-serif;font-weight:700;font-size:15px;color:var(--w);margin-bottom:6px}
+    .ct-response-desc{font-size:13px;font-weight:300;color:rgba(255,255,255,.38);line-height:1.6}
+    .ct-social-block{padding:28px 32px;border:1px solid var(--border)}
+    .ct-social-title{font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:16px}
+    .ct-socials{display:flex;gap:12px}
+    .ct-social{width:40px;height:40px;border:1px solid var(--border);border-radius:4px;display:flex;align-items:center;justify-content:center;color:var(--muted);text-decoration:none;transition:all .2s}
+    .ct-social:hover{border-color:var(--lime);color:var(--lime)}
+    .ct-social svg{width:18px;height:18px}
+
+    /* FAQ */
+    .ct-faq{padding:96px 0;background:var(--off);border-top:1px solid var(--border)}
+    .faq-h2{font-family:'Syne',sans-serif;font-weight:700;font-size:clamp(24px,2.4vw,36px);color:var(--ink);letter-spacing:-.03em;margin-bottom:48px}
+    .faq-h2 em{font-style:normal;color:var(--lime)}
+    .faq-list{display:grid;grid-template-columns:1fr 1fr;gap:2px}
+    .faq-item{background:var(--w);padding:32px 36px;border-bottom:2px solid transparent;transition:border-color .2s}
+    .faq-item:hover{border-color:var(--lime)}
+    .faq-q{font-family:'Syne',sans-serif;font-weight:700;font-size:16px;color:var(--ink);margin-bottom:12px;line-height:1.3}
+    .faq-a{font-size:13px;font-weight:300;line-height:1.75;color:var(--muted)}
+
+    @media(max-width:900px){.ct-hero-inner,.ct-layout,.faq-list{grid-template-columns:1fr}.form-row{grid-template-columns:1fr}.nav-links{display:none}}
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="wrap nav-inner">
+    <a href="home.html" class="nav-logo">Daki<span>Farm</span></a>
+    <ul class="nav-links">
+      <li><a href="qui-sommes-nous.html">Qui sommes-nous</a></li>
+      <li class="nav-has-drop"><a href="services.html">Services <svg class="nav-caret" width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <div class="nav-drop"><div class="nav-drop-grid">
+          <a href="services-elearning.html" class="nd"><span class="nd-n">01</span><div><span class="nd-t">e-learning</span><span class="nd-d">1 000+ capsules vidéo gratuites</span></div></a>
+          <a href="services-arboria.html" class="nd"><span class="nd-n">02</span><div><span class="nd-t">Arbor'IA</span><span class="nd-d">Gestion de parcelles satellite</span></div></a>
+          <a href="services-irrigation.html" class="nd"><span class="nd-n">03</span><div><span class="nd-t">Smart Irrigation</span><span class="nd-d">Irrigation sans capteur physique</span></div></a>
+          <a href="services-maladies.html" class="nd"><span class="nd-n">04</span><div><span class="nd-t">Détection maladies</span><span class="nd-d">Diagnostic IA en quelques secondes</span></div></a>
+          <a href="services-marketplace.html" class="nd"><span class="nd-n">05</span><div><span class="nd-t">Marketplace</span><span class="nd-d">Vente directe sans intermédiaire</span></div></a>
+          <a href="services-callcenter.html" class="nd"><span class="nd-n">06</span><div><span class="nd-t">Call Center ANADER</span><span class="nd-d">Interface humaine complémentaire</span></div></a>
+        </div></div>
+      </li>
+      <li><a href="impact.html">Impact</a></li>
+      <li><a href="nrci.html">NRCI</a></li>
+      <li><a href="contact.html" class="active">Contact</a></li>
+    </ul>
+    <a href="devenir-partenaire.html" class="nav-cta">Devenir partenaire</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="ct-hero">
+  <div class="wrap">
+    <div class="ct-hero-inner">
+      <div class="r">
+        <span class="eyebrow">Nous contacter</span>
+        <h1 class="ct-h1">Parlons de<br><em>votre projet.</em></h1>
+        <p class="ct-lead">Une question sur nos services, un projet de partenariat, une demande presse ou institutionnelle - notre équipe répond sous 48h ouvrées.</p>
+      </div>
+      <div class="ct-offices r r2">
+        <div class="ct-office">
+          <div class="ct-office-dot"></div>
+          <div>
+            <span class="ct-office-role">Siège groupe · Europe</span>
+            <div class="ct-office-city">Paris, France</div>
+            <div class="ct-office-addr">9 rue Fulton, 75013 Paris<br>Direction générale<br>Partenariats institutionnels</div>
+          </div>
+        </div>
+        <div class="ct-office">
+          <div class="ct-office-dot"></div>
+          <div>
+            <span class="ct-office-role">Bureau · Afrique du Nord</span>
+            <div class="ct-office-city">Rabat, Maroc</div>
+            <div class="ct-office-addr">46 Av. Fal Ould Oumeir, 10090 Rabat<br>Développement Afrique du Nord</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FORMULAIRE + SIDEBAR -->
+<section class="ct-main">
+  <div class="wrap">
+    <div class="ct-layout">
+      <div class="r">
+        <h2 class="ct-form-h2">Envoyez-nous<br><em>un message.</em></h2>
+        <p class="ct-form-sub">Précisez l'objet de votre demande pour qu'elle soit dirigée vers le bon interlocuteur dès réception.</p>
+        <form class="ct-form-el" onsubmit="handleSubmit(event)">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="prenom">Prénom</label>
+              <input type="text" id="prenom" placeholder="Votre prénom" required>
+            </div>
+            <div class="form-group">
+              <label for="nom">Nom</label>
+              <input type="text" id="nom" placeholder="Votre nom" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" placeholder="vous@organisation.org" required>
+          </div>
+          <div class="form-group">
+            <label for="objet">Objet de la demande</label>
+            <select id="objet">
+              <option value="">Sélectionnez…</option>
+              <option>Partenariat institutionnel</option>
+              <option>Partenariat entreprise / sponsor</option>
+              <option>Demande presse / médias</option>
+              <option>Question sur les services</option>
+              <option>Candidature / Recrutement</option>
+              <option>Autre</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="message">Message</label>
+            <textarea id="message" placeholder="Décrivez votre demande…" required></textarea>
+          </div>
+          <button type="submit" class="form-submit">Envoyer →</button>
+          <p class="form-note">Vos données sont utilisées uniquement pour traiter votre demande.</p>
+        </form>
+      </div>
+
+      <div class="ct-sidebar r r2">
+        <div class="ct-contact-block">
+          <span class="ct-contact-label">Coordonnées directes</span>
+          <div style="display:flex;align-items:flex-start;gap:16px;margin-top:4px">
+            <div class="ct-contact-icon" style="margin-top:2px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
+            <div>
+              <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:18px;letter-spacing:-.02em;margin-bottom:8px"><a href="mailto:contact@nrci.fr" style="color:var(--ink);text-decoration:none">contact@nrci.fr</a></div>
+              <div style="font-size:13px;font-weight:300;color:var(--muted);line-height:1.65">Une seule adresse pour toutes vos demandes - questions sur les services, partenariats institutionnels, presse et médias.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="ct-response-block">
+          <div class="ct-response-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+          <div>
+            <div class="ct-response-title">Délai de réponse garanti</div>
+            <div class="ct-response-desc">Toutes les demandes reçoivent une réponse personnalisée sous 48h ouvrées. Pas de réponse automatique.</div>
+          </div>
+        </div>
+
+        <div class="ct-social-block">
+          <div class="ct-social-title">Suivre Daki Farm</div>
+          <div class="ct-socials">
+            <a href="#" class="ct-social" aria-label="LinkedIn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+            </a>
+            <a href="#" class="ct-social" aria-label="Twitter / X">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 4l16 16M4 20L20 4"/></svg>
+            </a>
+            <a href="#" class="ct-social" aria-label="YouTube">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46A2.78 2.78 0 0 0 1.46 6.42 29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58 2.78 2.78 0 0 0 1.95 1.96C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02"/></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="ct-faq">
+  <div class="wrap">
+    <h2 class="faq-h2 r">Questions <em>fréquentes.</em></h2>
+    <div class="faq-list r r2">
+      <div class="faq-item">
+        <div class="faq-q">Daki Farm est-il disponible dans mon pays ?</div>
+        <p class="faq-a">Daki Farm opère dans 14 pays africains. Contactez-nous avec votre pays d'intérêt - nous vous indiquerons le statut exact du déploiement et les partenaires locaux présents.</p>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Comment fonctionne un partenariat institutionnel ?</div>
+        <p class="faq-a">Nous travaillons en co-conception avec l'institution partenaire pour adapter nos services au contexte local. Consultez notre page <a href="devenir-partenaire.html" style="color:var(--lime)">Devenir partenaire</a> pour les détails du processus.</p>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">L'application Daki Farm est-elle vraiment gratuite ?</div>
+        <p class="faq-a">Oui. Les services e-learning, détection de maladies et consultation météo sont accessibles gratuitement pour tous les agriculteurs - sans abonnement, sans carte bancaire.</p>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Proposez-vous des démonstrations pour les bailleurs ?</div>
+        <p class="faq-a">Oui, nous organisons des sessions de démonstration personnalisées (en présentiel ou visioconférence) pour les agences de développement, ministères et fondations. Contactez-nous pour planifier.</p>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Où puis-je télécharger l'application ?</div>
+        <p class="faq-a">Daki Farm est disponible sur Android via le Google Play Store - bientôt sur iOS. Recherchez "Daki Farm" ou scannez le QR code disponible sur la page d'accueil du site.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  const io = new IntersectionObserver(e => e.forEach(x => { if(x.isIntersecting) x.target.classList.add('in'); }), {threshold:.07});
+  document.querySelectorAll('.r').forEach(el => io.observe(el));
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    const btn = e.target.querySelector('.form-submit');
+    btn.textContent = 'Message envoyé ✓';
+    btn.style.background = 'var(--dark)';
+    btn.style.color = 'var(--lime)';
+    btn.disabled = true;
+  }
+</script>
+</body>
+</html>

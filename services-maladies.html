@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Détection de maladies - Daki Farm</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--lime:#84B843;--lime-l:#A8D468;--dark:#1B3318;--ink:#0F1A0F;--w:#fff;--off:#F5F8F2;--muted:#687868;--border:#DDE8D3;--nav-h:72px}
+    html{scroll-behavior:smooth}
+    body{font-family:'DM Sans',sans-serif;background:#fff;color:var(--ink);overflow-x:hidden}
+    .wrap{max-width:1280px;margin:0 auto;padding:0 clamp(20px,5vw,80px)}
+    .eyebrow{display:block;font-weight:600;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--lime);margin-bottom:18px}
+    .r{opacity:0;transform:translateY(28px);transition:opacity .75s ease,transform .75s ease}
+    .r.in{opacity:1;transform:none}
+    .r2{transition-delay:.12s}.r3{transition-delay:.24s}.r4{transition-delay:.36s}
+    /* NAV */
+    .nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);z-index:100;display:flex;align-items:center;background:rgba(11,20,10,.88);backdrop-filter:blur(18px);border-bottom:1px solid rgba(255,255,255,.07)}
+    .nav-inner{width:100%;display:flex;align-items:center;justify-content:space-between;gap:32px}
+    .nav-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:20px;color:var(--w);text-decoration:none}
+    .nav-logo span{color:var(--lime)}
+    .nav-links{display:flex;align-items:center;gap:36px;list-style:none}
+    .nav-links a{font-size:13.5px;font-weight:500;color:rgba(255,255,255,.62);text-decoration:none;transition:color .2s}
+    .nav-links a:hover,.nav-links a.active{color:var(--w)}
+    .nav-cta{font-weight:600;font-size:13px;padding:10px 22px;border-radius:3px;background:var(--lime);color:var(--dark);border:none;cursor:pointer}
+    .nav-has-drop{position:relative}.nav-has-drop::after{content:"";position:absolute;top:100%;left:-20px;right:-20px;height:16px}
+    .nav-has-drop>a{display:flex;align-items:center;gap:5px}
+    .nav-caret{transition:transform .2s}
+    .nav-has-drop:hover .nav-caret{transform:rotate(180deg)}
+    .nav-drop{position:absolute;top:calc(100% + 14px);left:50%;transform:translateX(-50%) translateY(6px);background:rgba(7,16,5,.97);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,.08);width:500px;padding:8px;opacity:0;pointer-events:none;transition:opacity .18s,transform .18s;z-index:200}
+    .nav-has-drop:hover .nav-drop{opacity:1;pointer-events:all;transform:translateX(-50%) translateY(0)}
+    .nav-drop-grid{display:grid;grid-template-columns:1fr 1fr}
+    .nd{display:flex;align-items:flex-start;gap:12px;padding:13px 14px;text-decoration:none;border-radius:2px;transition:background .15s}
+    .nd:hover{background:rgba(255,255,255,.06)}
+    .nd-n{font-family:'Syne',sans-serif;font-weight:700;font-size:10px;letter-spacing:.12em;color:var(--lime);flex-shrink:0;padding-top:2px}
+    .nd-t{font-size:13px;font-weight:600;color:var(--w);display:block}
+    .nd-d{font-size:11px;color:rgba(255,255,255,.38);display:block;margin-top:3px;font-weight:300}
+    /* HERO */
+    .p-hero{position:relative;overflow:hidden;min-height:92vh;display:flex;align-items:flex-end}
+    .p-hero-bg{position:absolute;inset:0;z-index:0}
+    .p-hero-bg video{width:100%;height:100%;object-fit:cover;display:block}
+    .p-hero-bg::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(4,10,3,.95) 0%,rgba(4,10,3,.6) 38%,rgba(4,10,3,.18) 68%,transparent 100%),linear-gradient(to right,rgba(4,10,3,.45) 0%,transparent 58%)}
+    .p-hero-inner{position:relative;z-index:2;padding:var(--nav-h) 0 80px;max-width:680px}
+    .p-breadcrumb{font-size:12px;color:rgba(255,255,255,.35);margin-bottom:24px;letter-spacing:.04em}
+    .p-breadcrumb a{color:rgba(255,255,255,.35);text-decoration:none}
+    .p-breadcrumb a:hover{color:var(--lime-l)}
+    .p-num{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(64px,8vw,120px);line-height:1;color:rgba(132,184,67,.1);letter-spacing:-.05em;margin-bottom:-16px}
+    .p-h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(32px,4vw,62px);line-height:1.02;color:var(--w);letter-spacing:-.04em;margin-bottom:24px}
+    .p-h1 em{font-style:normal;color:var(--lime-l)}
+    .p-lead{font-size:clamp(14px,1.4vw,17px);font-weight:300;line-height:1.8;color:rgba(255,255,255,.52);margin-bottom:36px;max-width:520px}
+    .p-badge{display:inline-flex;align-items:center;gap:8px;padding:9px 18px;border:1px solid rgba(132,184,67,.3);border-radius:2px;font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--lime);backdrop-filter:blur(6px);background:rgba(255,255,255,.04)}
+    /* SOLUTION */
+    .p-solution{padding:104px 0;background:var(--w)}
+    .sol-layout{display:grid;grid-template-columns:1fr 1fr;gap:96px;align-items:center}
+    .sol-h2{font-family:'Syne',sans-serif;font-weight:700;font-size:clamp(24px,2.6vw,38px);color:var(--ink);letter-spacing:-.03em;line-height:1.1;margin-bottom:24px}
+    .sol-h2 em{font-style:normal;color:var(--lime)}
+    .sol-body{font-size:15px;font-weight:300;line-height:1.85;color:var(--muted)}
+    .sol-body p+p{margin-top:18px}
+    .sol-body strong{color:var(--ink);font-weight:500}
+    .sol-stat{margin-top:40px;padding:28px 32px;background:var(--off);border-left:3px solid var(--lime)}
+    .sol-stat-n{font-family:'Syne',sans-serif;font-weight:700;font-size:clamp(32px,3vw,48px);color:var(--lime);letter-spacing:-.03em;line-height:1}
+    .sol-stat-l{font-size:13px;color:var(--muted);margin-top:6px}
+    .sol-img{height:400px;overflow:hidden}
+    .sol-img video{width:100%;height:100%;object-fit:cover;display:block}
+    /* FEATURES */
+    .p-features{padding:96px 0;background:var(--off)}
+    .feat-h2{font-family:'Syne',sans-serif;font-weight:700;font-size:clamp(24px,2.6vw,38px);color:var(--ink);letter-spacing:-.03em;margin-bottom:64px}
+    .feat-h2 em{font-style:normal;color:var(--lime)}
+    .feat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--border)}
+    .feat-item{padding:40px 32px;border-right:1px solid var(--border);position:relative}
+    .feat-item:last-child{border-right:none}
+    .feat-item::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--lime);transform:scaleX(0);transform-origin:left;transition:transform .3s}
+    .feat-item:hover::before{transform:scaleX(1)}
+    .feat-icon{width:44px;height:44px;border-radius:8px;background:rgba(132,184,67,.1);display:flex;align-items:center;justify-content:center;color:var(--lime);margin-bottom:20px}
+    .feat-icon svg{width:22px;height:22px}
+    .feat-title{font-family:'Syne',sans-serif;font-weight:700;font-size:16px;color:var(--ink);margin-bottom:10px}
+    .feat-desc{font-size:13px;font-weight:300;line-height:1.75;color:var(--muted)}
+    /* AI DEMO */
+    .ai-demo{background:var(--ink);border-radius:4px;padding:48px 52px;margin-top:56px}
+    .ai-demo-hd{display:flex;align-items:center;gap:10px;margin-bottom:36px}
+    .ai-demo-dot{width:8px;height:8px;border-radius:50%;background:var(--lime);flex-shrink:0;animation:aiPulse 2s ease-in-out infinite}
+    @keyframes aiPulse{0%,100%{box-shadow:0 0 0 0 rgba(132,184,67,.5)}50%{box-shadow:0 0 0 7px rgba(132,184,67,0)}}
+    .ai-demo-lbl{font-size:11px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:var(--lime)}
+    .ai-demo-sub{margin-left:auto;font-size:11px;color:rgba(255,255,255,.22)}
+    .ai-demo-inner{display:grid;grid-template-columns:280px 1fr;gap:48px;align-items:start}
+    .ai-scan-frame{position:relative;overflow:hidden;border-radius:3px;background:#0a1a08}
+    .ai-scan-img{width:100%;height:220px;object-fit:cover;display:block;filter:brightness(.8);transition:opacity .4s}
+    .ai-scan-beam{position:absolute;left:0;right:0;height:2px;background:linear-gradient(to right,transparent 0%,var(--lime) 40%,var(--lime) 60%,transparent 100%);top:0;animation:scanBeam 1.6s ease-in-out infinite;box-shadow:0 0 14px rgba(132,184,67,.7);z-index:3}
+    @keyframes scanBeam{0%,100%{top:0;opacity:1}85%{top:calc(100% - 2px);opacity:.6}}
+    .ai-corner{position:absolute;width:14px;height:14px;border-color:var(--lime);border-style:solid;z-index:4}
+    .ai-tl{top:8px;left:8px;border-width:2px 0 0 2px}
+    .ai-tr{top:8px;right:8px;border-width:2px 2px 0 0}
+    .ai-bl{bottom:8px;left:8px;border-width:0 0 2px 2px}
+    .ai-br{bottom:8px;right:8px;border-width:0 2px 2px 0}
+    .ai-scan-state{position:absolute;bottom:0;left:0;right:0;padding:10px 14px;background:linear-gradient(to top,rgba(4,10,3,.9),transparent);display:flex;align-items:center;gap:8px;z-index:5}
+    .ai-spinner{width:10px;height:10px;border:1.5px solid rgba(132,184,67,.25);border-top-color:var(--lime);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .ai-scan-caption{padding:10px 0 0;font-size:11px;color:rgba(255,255,255,.3);display:flex;align-items:center;gap:6px}
+    .ai-scan-cdot{width:5px;height:5px;border-radius:50%;background:var(--lime);flex-shrink:0}
+    .ai-crop-tabs{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+    .ai-crop-tab{padding:5px 14px;font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;border-radius:2px;border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.3);background:transparent;cursor:pointer;transition:all .2s}
+    .ai-crop-tab.active{background:rgba(132,184,67,.12);border-color:rgba(132,184,67,.35);color:var(--lime)}
+    .ai-result{padding-top:4px}
+    .ai-res-top{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+    .ai-res-badge{font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;padding:4px 10px;border-radius:2px;background:rgba(132,184,67,.12);color:var(--lime);border:1px solid rgba(132,184,67,.25)}
+    .ai-res-culture{font-size:11px;color:rgba(255,255,255,.28);letter-spacing:.04em}
+    .ai-res-name{font-family:'Syne',sans-serif;font-weight:700;font-size:clamp(20px,2vw,30px);color:var(--w);letter-spacing:-.03em;margin-bottom:4px;animation:resIn .35s ease}
+    @keyframes resIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+    .ai-res-cat{font-size:12px;color:rgba(255,255,255,.3);margin-bottom:24px;font-style:italic}
+    .ai-conf-row{display:flex;align-items:center;gap:14px;margin-bottom:6px}
+    .ai-conf-lbl{font-size:11px;color:rgba(255,255,255,.3);width:80px;flex-shrink:0}
+    .ai-conf-bar{flex:1;height:3px;background:rgba(255,255,255,.07);border-radius:2px;overflow:hidden}
+    .ai-conf-fill{height:100%;border-radius:2px;background:var(--lime);width:0;transition:width .9s ease}
+    .ai-conf-pct{font-size:13px;font-weight:700;color:var(--w);width:36px;text-align:right;flex-shrink:0}
+    .ai-sev{display:flex;align-items:center;gap:8px;margin:14px 0 24px}
+    .ai-sev-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+    .ai-sev-txt{font-size:12px;color:rgba(255,255,255,.4)}
+    .ai-treat-hd{font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.25);margin-bottom:12px}
+    .ai-treat-list{list-style:none;padding:0;margin:0}
+    .ai-treat-list li{font-size:12px;font-weight:300;color:rgba(255,255,255,.6);padding:9px 0;border-bottom:1px solid rgba(255,255,255,.05);display:flex;gap:10px;align-items:flex-start;line-height:1.55}
+    .ai-treat-list li:last-child{border-bottom:none}
+    .ai-treat-arrow{color:var(--lime);font-weight:600;flex-shrink:0}
+    @media(max-width:900px){.ai-demo-inner{grid-template-columns:1fr}.ai-demo{padding:32px 24px}.ai-demo-sub{display:none}}
+    /* STEPS */
+    .p-steps{padding:104px 0;background:var(--dark)}
+    .steps-h2{font-family:'Syne',sans-serif;font-weight:700;font-size:clamp(24px,2.6vw,38px);color:var(--w);letter-spacing:-.03em;margin-bottom:64px}
+    .steps-h2 em{font-style:normal;color:var(--lime-l)}
+    .steps-list{display:grid;grid-template-columns:repeat(3,1fr);gap:0}
+    .step{padding:48px 40px;border-right:1px solid rgba(255,255,255,.07)}
+    .step:last-child{border-right:none}
+    .step-n{font-family:'Syne',sans-serif;font-weight:800;font-size:48px;color:rgba(132,184,67,.15);letter-spacing:-.04em;line-height:1;margin-bottom:20px}
+    .step-title{font-family:'Syne',sans-serif;font-weight:700;font-size:17px;color:var(--w);margin-bottom:12px}
+    .step-desc{font-size:13px;font-weight:300;line-height:1.75;color:rgba(255,255,255,.42)}
+    /* CTA */
+    .p-cta{background:var(--off);padding:96px 0;border-top:1px solid var(--border)}
+    .cta-inner{display:flex;align-items:center;justify-content:space-between;gap:48px;flex-wrap:wrap}
+    .cta-txt{font-family:'Syne',sans-serif;font-weight:700;font-size:clamp(22px,2.2vw,34px);color:var(--ink);line-height:1.2;max-width:480px}
+    .cta-txt em{font-style:normal;color:var(--lime)}
+    .cta-btns{display:flex;gap:12px;flex-wrap:wrap}
+    .btn-p{font-weight:600;font-size:14px;padding:14px 30px;border-radius:3px;background:var(--lime);color:var(--dark);border:none;cursor:pointer;transition:background .2s;text-decoration:none;display:inline-flex;align-items:center}
+    .btn-p:hover{background:var(--lime-l)}
+    .btn-o{font-weight:500;font-size:14px;padding:13px 30px;border-radius:3px;background:transparent;color:var(--ink);border:1.5px solid var(--border);cursor:pointer;transition:border-color .2s;text-decoration:none;display:inline-flex;align-items:center}
+    .btn-o:hover{border-color:var(--lime)}
+    @media(max-width:900px){.sol-layout,.feat-grid,.steps-list{grid-template-columns:1fr}.sol-img{height:240px}.feat-item{border-right:none;border-bottom:1px solid var(--border)}.step{border-right:none;border-bottom:1px solid rgba(255,255,255,.07)}.nav-links{display:none}}
+  </style>
+</head>
+<body>
+<nav class="nav" id="nav">
+  <div class="wrap nav-inner">
+    <a href="home.html" class="nav-logo">Daki<span>Farm</span></a>
+    <ul class="nav-links">
+      <li><a href="qui-sommes-nous.html">Qui sommes-nous</a></li>
+      <li class="nav-has-drop"><a href="services.html" class="active">Services <svg class="nav-caret" width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <div class="nav-drop"><div class="nav-drop-grid">
+          <a href="services-elearning.html" class="nd"><span class="nd-n">01</span><div><span class="nd-t">e-learning</span><span class="nd-d">1 000+ capsules vidéo gratuites</span></div></a>
+          <a href="services-arboria.html" class="nd"><span class="nd-n">02</span><div><span class="nd-t">Arbor'IA</span><span class="nd-d">Gestion de parcelles satellite</span></div></a>
+          <a href="services-irrigation.html" class="nd"><span class="nd-n">03</span><div><span class="nd-t">Smart Irrigation</span><span class="nd-d">Irrigation sans capteur physique</span></div></a>
+          <a href="services-maladies.html" class="nd"><span class="nd-n">04</span><div><span class="nd-t">Détection maladies</span><span class="nd-d">Diagnostic IA en quelques secondes</span></div></a>
+          <a href="services-marketplace.html" class="nd"><span class="nd-n">05</span><div><span class="nd-t">Marketplace</span><span class="nd-d">Vente directe sans intermédiaire</span></div></a>
+          <a href="services-callcenter.html" class="nd"><span class="nd-n">06</span><div><span class="nd-t">Call Center ANADER</span><span class="nd-d">Interface humaine complémentaire</span></div></a>
+        </div></div>
+      </li>
+      <li><a href="impact.html">Impact</a></li>
+      <li><a href="nrci.html">NRCI</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <button class="nav-cta">Devenir partenaire</button>
+  </div>
+</nav>
+
+<section class="p-hero">
+  <div class="p-hero-bg">
+    <video autoplay muted loop playsinline>
+      <source src="https://videos.pexels.com/video-files/18873953/18873953-uhd_2560_1440_30fps.mp4" type="video/mp4">
+    </video>
+  </div>
+  <div class="wrap">
+    <div class="p-hero-inner">
+      <p class="p-breadcrumb"><a href="services.html">Services</a> / Détection de maladies</p>
+      <div class="p-num">04</div>
+      <h1 class="p-h1">Photographiez.<br><em>Daki Farm diagnostique.</em></h1>
+      <p class="p-lead">Identifiez maladies, ravageurs et carences sur vos cultures en moins de 10 secondes - depuis le champ, avec votre téléphone.</p>
+    </div>
+  </div>
+</section>
+
+<section class="p-solution">
+  <div class="wrap">
+    <div class="sol-layout r">
+      <div>
+        <span class="eyebrow">Le problème résolu</span>
+        <h2 class="sol-h2">Une maladie non détectée<br><em>peut détruire une récolte entière.</em></h2>
+        <div class="sol-body">
+          <p>En Afrique subsaharienne, les maladies phytosanitaires et les ravageurs détruisent en moyenne 20 à 40 % des récoltes chaque année. La plupart de ces pertes sont évitables - à condition d'intervenir dans les 48 à 72 heures suivant l'apparition des premiers symptômes.</p>
+          <p>Le problème : identifier une maladie requiert l'expertise d'un phytopathologiste. Un professionnel rare, souvent éloigné, et indisponible en temps réel. La plupart des agriculteurs attendent que "ça empire" pour réagir - souvent trop tard.</p>
+          <p>Le module de détection de Daki Farm transforme <strong>chaque téléphone en laboratoire de diagnostic</strong>. Une photo de la feuille ou du fruit atteint suffit : en moins de 10 secondes, l'IA identifie la maladie, évalue la sévérité et propose <strong>un protocole de traitement adapté et local</strong>.</p>
+        </div>
+        <div class="sol-stat">
+          <div class="sol-stat-n">96%</div>
+          <div class="sol-stat-l">de précision de diagnostic - grâce à un modèle d'IA que nous avons entraîné et affiné nous-mêmes, sur des données issues du terrain africain</div>
+        </div>
+      </div>
+      <div class="sol-img">
+        <video autoplay muted loop playsinline>
+          <source src="https://videos.pexels.com/video-files/37018575/15684082_2560_1440_60fps.mp4" type="video/mp4">
+        </video>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="p-features">
+  <div class="wrap">
+    <h2 class="feat-h2 r">Ce que propose<br><em>le service.</em></h2>
+    <div class="feat-grid r r2">
+      <div class="feat-item">
+        <div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></div>
+        <div class="feat-title">Diagnostic photo instantané</div>
+        <p class="feat-desc">Prenez en photo une feuille, un fruit ou une tige atteints. L'IA analyse l'image et retourne un diagnostic en moins de 10 secondes, même hors connexion.</p>
+      </div>
+      <div class="feat-item">
+        <div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+        <div class="feat-title">Maladies et ravageurs</div>
+        <p class="feat-desc">Base de données couvrant les principales cultures africaines : maïs, manioc, tomate, cacao, coton, mil, sorgho, banane. Maladies fongiques, bactériennes, virales et carences.</p>
+      </div>
+      <div class="feat-item">
+        <div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
+        <div class="feat-title">Traitement localisé recommandé</div>
+        <p class="feat-desc">Les produits recommandés sont disponibles localement et conformes aux réglementations nationales. Dosages, fréquences et précautions d'emploi inclus.</p>
+      </div>
+      <div class="feat-item">
+        <div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.77 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 17z"/></svg></div>
+        <div class="feat-title">Réseau d'alerte épidémique</div>
+        <p class="feat-desc">Les diagnostics anonymisés alimentent une carte d'alerte en temps réel. En cas de propagation détectée, tous les agriculteurs de la zone sont prévenus automatiquement.</p>
+      </div>
+    </div>
+
+    <div class="ai-demo r r3">
+      <div class="ai-demo-hd">
+        <span class="ai-demo-dot"></span>
+        <span class="ai-demo-lbl">Simulation diagnostic IA</span>
+        <span class="ai-demo-sub">Démonstration du module de détection Daki Farm</span>
+      </div>
+      <div class="ai-demo-inner">
+        <div>
+          <div class="ai-scan-frame">
+            <img id="aiImg" src="https://images.pexels.com/photos/547263/pexels-photo-547263.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Culture analysée">
+            <div class="ai-scan-beam"></div>
+            <div class="ai-corner ai-tl"></div>
+            <div class="ai-corner ai-tr"></div>
+            <div class="ai-corner ai-bl"></div>
+            <div class="ai-corner ai-br"></div>
+            <div class="ai-scan-state">
+              <div class="ai-spinner"></div>
+              <span style="font-size:11px;color:rgba(255,255,255,.5)" id="aiStateLabel">Analyse IA en cours...</span>
+            </div>
+          </div>
+          <div class="ai-scan-caption">
+            <span class="ai-scan-cdot"></span>
+            <span id="aiCaption">Photo soumise à l'IA</span>
+          </div>
+          <div class="ai-crop-tabs" id="aiTabs"></div>
+        </div>
+        <div class="ai-result" id="aiResult"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="p-steps">
+  <div class="wrap">
+    <h2 class="steps-h2 r">Comment ça <em>marche.</em></h2>
+    <div class="steps-list r r2">
+      <div class="step">
+        <div class="step-n">01</div>
+        <div class="step-title">Photographiez la plante atteinte</div>
+        <p class="step-desc">Ouvrez l'application, sélectionnez "Détecter une maladie" et prenez une photo de la partie affectée. La qualité d'image d'un téléphone entrée de gamme est suffisante.</p>
+      </div>
+      <div class="step">
+        <div class="step-n">02</div>
+        <div class="step-title">Recevez le diagnostic en 10 secondes</div>
+        <p class="step-desc">L'IA identifie la maladie, évalue la sévérité (légère / modérée / critique) et explique les mécanismes d'infection - dans votre langue locale.</p>
+      </div>
+      <div class="step">
+        <div class="step-n">03</div>
+        <div class="step-title">Appliquez le traitement recommandé</div>
+        <p class="step-desc">Un protocole de traitement pas à pas vous est fourni : produit, dosage, mode d'application.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="p-cta">
+  <div class="wrap">
+    <div class="cta-inner r">
+      <p class="cta-txt">Intégrer la détection de maladies<br><em>à votre programme phytosanitaire ?</em></p>
+      <div class="cta-btns">
+        <a href="lancement.html" class="btn-p">Télécharger l'application →</a>
+        <a href="devenir-partenaire.html" class="btn-o">Devenir partenaire institutionnel</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  const io = new IntersectionObserver(e => e.forEach(x => { if(x.isIntersecting) x.target.classList.add('in'); }), {threshold:.07});
+  document.querySelectorAll('.r').forEach(el => io.observe(el));
+
+  const diagCases = [
+    {
+      culture: 'Maïs', tab: 'Maïs',
+      img: 'https://images.pexels.com/photos/547263/pexels-photo-547263.jpeg?auto=compress&cs=tinysrgb&w=600',
+      maladie: 'Mildiou du maïs',
+      cat: 'Maladie fongique · Plasmopara maydis',
+      conf: 94, sev: 'Modérée', sevColor: '#e8a020',
+      traitement: ['Fongicide Mancozèbe 2 g/L en pulvérisation foliaire', 'Application sous 48h, au lever du soleil', 'Répéter à J+10 si temps humide persistant']
+    },
+    {
+      culture: 'Manioc', tab: 'Manioc',
+      img: 'https://images.pexels.com/photos/7543161/pexels-photo-7543161.jpeg?auto=compress&cs=tinysrgb&w=600&fit=crop&h=400',
+      maladie: 'Mosaïque du manioc',
+      cat: 'Maladie virale · Cassava Mosaic Virus',
+      conf: 89, sev: 'Élevée', sevColor: '#d94040',
+      traitement: ['Éliminer et brûler immédiatement les plants infectés', 'Remplacer par des boutures certifiées saines', 'Traitement insecticide contre aleurodes vecteurs']
+    },
+    {
+      culture: 'Tomate', tab: 'Tomate',
+      img: 'https://images.pexels.com/photos/1327838/pexels-photo-1327838.jpeg?auto=compress&cs=tinysrgb&w=600',
+      maladie: 'Alternariose de la tomate',
+      cat: 'Maladie fongique · Alternaria solani',
+      conf: 97, sev: 'Faible', sevColor: '#84B843',
+      traitement: ['Retirer et détruire les feuilles affectées', 'Chlorothalonil 2 g/L en application préventive', 'Améliorer la ventilation entre plants']
+    },
+    {
+      culture: 'Riz', tab: 'Riz',
+      img: 'https://images.pexels.com/photos/96417/pexels-photo-96417.jpeg?auto=compress&cs=tinysrgb&w=600',
+      maladie: 'Pyriculariose du riz',
+      cat: 'Maladie fongique · Magnaporthe oryzae',
+      conf: 91, sev: 'Modérée', sevColor: '#e8a020',
+      traitement: ['Tricyclazole 0,6 g/L en traitement curatif', 'Drainage partiel de la parcelle sous 24h', 'Répéter le traitement dans 7 jours si persistance']
+    }
+  ];
+
+  let currentCase = 0, scanTimer, autoTimer;
+  const aiImg = document.getElementById('aiImg');
+  const aiResult = document.getElementById('aiResult');
+  const aiStateLabel = document.getElementById('aiStateLabel');
+  const aiCaption = document.getElementById('aiCaption');
+  const aiTabs = document.getElementById('aiTabs');
+
+  diagCases.forEach(function(c, i) {
+    const btn = document.createElement('button');
+    btn.className = 'ai-crop-tab' + (i === 0 ? ' active' : '');
+    btn.textContent = c.tab;
+    btn.addEventListener('click', function() { switchCase(i); clearInterval(autoTimer); });
+    aiTabs.appendChild(btn);
+  });
+
+  function showResult(c) {
+    aiResult.innerHTML =
+      '<div class="ai-res-top"><span class="ai-res-badge">Maladie détectée</span><span class="ai-res-culture">Culture : ' + c.culture + '</span></div>' +
+      '<div class="ai-res-name">' + c.maladie + '</div>' +
+      '<div class="ai-res-cat">' + c.cat + '</div>' +
+      '<div class="ai-conf-row"><span class="ai-conf-lbl">Confiance</span><div class="ai-conf-bar"><div class="ai-conf-fill" id="confFill"></div></div><span class="ai-conf-pct">' + c.conf + '%</span></div>' +
+      '<div class="ai-sev"><span class="ai-sev-dot" style="background:' + c.sevColor + '"></span><span class="ai-sev-txt">Sévérité : <strong style="color:' + c.sevColor + '">' + c.sev + '</strong></span></div>' +
+      '<div class="ai-treat-hd">Traitement recommandé</div>' +
+      '<ul class="ai-treat-list">' +
+        c.traitement.map(function(t) { return '<li><span class="ai-treat-arrow">&#8594;</span>' + t + '</li>'; }).join('') +
+      '</ul>';
+    requestAnimationFrame(function() {
+      requestAnimationFrame(function() {
+        const fill = document.getElementById('confFill');
+        if (fill) fill.style.width = c.conf + '%';
+      });
+    });
+    aiStateLabel.textContent = 'Diagnostic terminé';
+    aiCaption.textContent = 'Résultat en ' + (Math.floor(Math.random() * 4) + 7) + ' secondes';
+  }
+
+  function switchCase(idx) {
+    currentCase = idx;
+    document.querySelectorAll('.ai-crop-tab').forEach(function(t, i) {
+      t.classList.toggle('active', i === idx);
+    });
+    const c = diagCases[idx];
+    aiImg.style.opacity = '0.4';
+    aiResult.innerHTML = '<div style="padding:40px 0;text-align:center"><div class="ai-spinner" style="margin:0 auto 12px;width:18px;height:18px;border-width:2px"></div><div style="font-size:12px;color:rgba(255,255,255,.3)">Analyse en cours...</div></div>';
+    aiStateLabel.textContent = 'Analyse IA en cours...';
+    aiCaption.textContent = 'Photo soumise à l\'IA';
+    setTimeout(function() {
+      aiImg.src = c.img;
+      aiImg.style.opacity = '1';
+    }, 200);
+    clearTimeout(scanTimer);
+    scanTimer = setTimeout(function() { showResult(c); }, 1800);
+  }
+
+  switchCase(0);
+  autoTimer = setInterval(function() {
+    switchCase((currentCase + 1) % diagCases.length);
+  }, 6000);
+</script>
+</body>
+</html>

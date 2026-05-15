@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lancement de l'application - Daki Farm</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--lime:#84B843;--lime-l:#A8D468;--dark:#1B3318;--ink:#0F1A0F;--w:#fff;--off:#F5F8F2;--muted:#687868;--border:#DDE8D3}
+    html{scroll-behavior:smooth}
+    body{font-family:'DM Sans',sans-serif;background:#060e05;color:#fff;overflow-x:hidden;min-height:100vh}
+
+    /* ── NAV ── */
+    .nav{position:fixed;top:0;left:0;right:0;height:72px;z-index:100;display:flex;align-items:center;background:rgba(6,14,5,.82);backdrop-filter:blur(18px);border-bottom:1px solid rgba(255,255,255,.06)}
+    .nav-inner{max-width:1280px;margin:0 auto;padding:0 clamp(20px,5vw,80px);width:100%;display:flex;align-items:center;justify-content:space-between}
+    .nav-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:20px;color:var(--w);text-decoration:none}
+    .nav-logo span{color:var(--lime)}
+    .nav-back{font-size:13px;font-weight:500;color:rgba(255,255,255,.55);text-decoration:none;display:flex;align-items:center;gap:8px;transition:color .2s}
+    .nav-back:hover{color:#fff}
+    .nav-back svg{transition:transform .2s}
+    .nav-back:hover svg{transform:translateX(-3px)}
+
+    /* ── HERO ── */
+    .hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:100px clamp(20px,5vw,80px) 80px;text-align:center;position:relative;overflow:hidden}
+    .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 40%, rgba(27,51,24,.7) 0%, transparent 70%)}
+    .hero-noise{position:absolute;inset:0;opacity:.03;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:200px}
+
+    .hero-eyebrow{display:inline-block;font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--lime);margin-bottom:28px;padding:8px 18px;border:1px solid rgba(132,184,67,.25);border-radius:100px;background:rgba(132,184,67,.07)}
+    .hero-h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(38px,6vw,80px);line-height:.96;letter-spacing:-.03em;color:#fff;margin-bottom:24px}
+    .hero-h1 em{color:var(--lime);font-style:normal}
+    .hero-sub{font-size:clamp(15px,1.6vw,18px);color:rgba(255,255,255,.52);max-width:520px;line-height:1.6;margin-bottom:64px}
+
+    /* ── COUNTDOWN ── */
+    .countdown{display:flex;align-items:flex-end;justify-content:center;gap:clamp(16px,3vw,40px);margin-bottom:72px;flex-wrap:wrap}
+    .cd-unit{display:flex;flex-direction:column;align-items:center;gap:8px;min-width:80px}
+    .cd-n{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(48px,7vw,96px);line-height:1;color:#fff;letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+    .cd-n span{color:var(--lime)}
+    .cd-l{font-size:10px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.3)}
+    .cd-sep{font-family:'Syne',sans-serif;font-weight:700;font-size:clamp(36px,5vw,72px);color:rgba(132,184,67,.3);line-height:1;padding-bottom:24px;align-self:flex-end}
+
+    /* ── FEATURES ── */
+    .features{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-bottom:64px;max-width:680px}
+    .feat-tag{font-size:12px;font-weight:500;letter-spacing:.04em;color:rgba(255,255,255,.45);padding:7px 14px;border:1px solid rgba(255,255,255,.08);border-radius:100px;white-space:nowrap;transition:border-color .2s,color .2s}
+    .feat-tag:hover{border-color:rgba(132,184,67,.35);color:rgba(255,255,255,.75)}
+
+    /* ── EMAIL FORM ── */
+    .notify-box{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:clamp(28px,4vw,48px);max-width:480px;width:100%;margin-bottom:48px}
+    .notify-title{font-family:'Syne',sans-serif;font-weight:700;font-size:20px;color:#fff;margin-bottom:8px}
+    .notify-sub{font-size:14px;color:rgba(255,255,255,.45);margin-bottom:24px;line-height:1.5}
+    .notify-form{display:flex;gap:10px;flex-wrap:wrap}
+    .notify-input{flex:1;min-width:200px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:6px;padding:13px 16px;font-family:'DM Sans',sans-serif;font-size:14px;color:#fff;outline:none;transition:border-color .2s}
+    .notify-input::placeholder{color:rgba(255,255,255,.3)}
+    .notify-input:focus{border-color:rgba(132,184,67,.5)}
+    .notify-btn{background:var(--lime);color:var(--dark);font-family:'DM Sans',sans-serif;font-weight:700;font-size:14px;padding:13px 22px;border:none;border-radius:6px;cursor:pointer;transition:background .2s,transform .1s;white-space:nowrap}
+    .notify-btn:hover{background:var(--lime-l)}
+    .notify-btn:active{transform:scale(.98)}
+    .notify-success{display:none;font-size:14px;color:var(--lime);margin-top:14px;font-weight:500}
+    .notify-success.on{display:block}
+    .notify-legal{font-size:11px;color:rgba(255,255,255,.25);margin-top:12px}
+
+    /* ── PROGRESS BAR ── */
+    .progress-wrap{max-width:480px;width:100%;margin-bottom:16px}
+    .progress-label{display:flex;justify-content:space-between;font-size:11px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:10px}
+    .progress-bar{height:3px;background:rgba(255,255,255,.08);border-radius:2px;overflow:hidden}
+    .progress-fill{height:100%;width:0;background:linear-gradient(to right, var(--dark), var(--lime));border-radius:2px;transition:width 1.2s ease}
+
+    /* ── FOOTER ── */
+    .page-footer{text-align:center;padding:32px 20px;border-top:1px solid rgba(255,255,255,.06)}
+    .page-footer a{font-size:13px;color:rgba(255,255,255,.35);text-decoration:none;transition:color .2s}
+    .page-footer a:hover{color:#fff}
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="home.html" class="nav-logo">Daki<span>Farm</span></a>
+    <a href="home.html" class="nav-back">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8L10 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Retour à l'accueil
+    </a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-noise"></div>
+  <span class="hero-eyebrow">Lancement officiel - 30 juin 2026</span>
+  <h1 class="hero-h1">L'agriculture africaine<br>dans votre <em>poche.</em></h1>
+  <p class="hero-sub">Formation, diagnostic, vente directe et conseils d'experts - l'écosystème Daki Farm arrive bientôt sur votre téléphone.</p>
+
+  <div class="countdown" id="countdown">
+    <div class="cd-unit"><div class="cd-n" id="cd-days">--</div><div class="cd-l">Jours</div></div>
+    <div class="cd-sep">:</div>
+    <div class="cd-unit"><div class="cd-n" id="cd-hours">--</div><div class="cd-l">Heures</div></div>
+    <div class="cd-sep">:</div>
+    <div class="cd-unit"><div class="cd-n" id="cd-minutes">--</div><div class="cd-l">Minutes</div></div>
+    <div class="cd-sep">:</div>
+    <div class="cd-unit"><div class="cd-n" id="cd-seconds">--</div><div class="cd-l">Secondes</div></div>
+  </div>
+
+  <div class="features">
+    <span class="feat-tag">1 000+ vidéos de formation</span>
+    <span class="feat-tag">Diagnostic maladies IA</span>
+    <span class="feat-tag">Irrigation intelligente</span>
+    <span class="feat-tag">Gestion de parcelles</span>
+    <span class="feat-tag">Marketplace agricole</span>
+    <span class="feat-tag">15+ langues africaines</span>
+    <span class="feat-tag">Conseiller agricole en 2h</span>
+    <span class="feat-tag">Optimisé mobile</span>
+    <span class="feat-tag">Alertes ravageurs</span>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-label"><span>Développement</span><span id="pct">0%</span></div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+  </div>
+
+  <div class="notify-box">
+    <div class="notify-title">Être notifié du lancement</div>
+    <div class="notify-sub">Laissez votre adresse - nous vous prévenons dès que l'application est disponible en téléchargement.</div>
+    <form class="notify-form" id="notifyForm" onsubmit="handleNotify(event)">
+      <input class="notify-input" id="notifyEmail" type="email" placeholder="votre@email.com" required>
+      <button class="notify-btn" type="submit">Me notifier</button>
+    </form>
+    <div class="notify-success" id="notifySuccess">Parfait ! Vous serez parmi les premiers informés.</div>
+    <p class="notify-legal">Aucun spam. Votre adresse ne sera jamais partagée.</p>
+  </div>
+</section>
+
+<footer class="page-footer">
+  <a href="home.html">← Retour au site Daki Farm</a>
+</footer>
+
+<script>
+  /* ── Countdown ── */
+  const TARGET = new Date('2026-06-30T00:00:00').getTime();
+
+  function pad(n){ return String(n).padStart(2, '0'); }
+
+  function tick(){
+    const now  = Date.now();
+    const diff = Math.max(0, TARGET - now);
+    const days    = Math.floor(diff / 86400000);
+    const hours   = Math.floor((diff % 86400000) / 3600000);
+    const minutes = Math.floor((diff % 3600000) / 60000);
+    const seconds = Math.floor((diff % 60000) / 1000);
+
+    document.getElementById('cd-days').textContent    = days;
+    document.getElementById('cd-hours').textContent   = pad(hours);
+    document.getElementById('cd-minutes').textContent = pad(minutes);
+    document.getElementById('cd-seconds').textContent = pad(seconds);
+  }
+
+  tick();
+  setInterval(tick, 1000);
+
+  /* ── Progress bar ── */
+  const START = new Date('2025-01-01').getTime();
+  const pct = Math.min(100, Math.round((Date.now() - START) / (TARGET - START) * 100));
+  setTimeout(() => {
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('pct').textContent = pct + '%';
+  }, 400);
+
+  /* ── Email form ── */
+  function handleNotify(e){
+    e.preventDefault();
+    const btn = e.target.querySelector('button');
+    btn.textContent = '...';
+    btn.disabled = true;
+    setTimeout(() => {
+      document.getElementById('notifyForm').style.display = 'none';
+      document.getElementById('notifySuccess').classList.add('on');
+    }, 700);
+  }
+</script>
+</body>
+</html>
