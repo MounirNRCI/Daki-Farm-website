@@ -108,7 +108,19 @@
     .faq-q{font-family:'Syne',sans-serif;font-weight:700;font-size:16px;color:var(--ink);margin-bottom:12px;line-height:1.3}
     .faq-a{font-size:13px;font-weight:300;line-height:1.75;color:var(--muted)}
 
-    @media(max-width:900px){.ct-hero-inner,.ct-layout,.faq-list{grid-template-columns:1fr}.form-row{grid-template-columns:1fr}.nav-links{display:none}}
+    @media(max-width:900px){.ct-hero-inner,.ct-layout,.faq-list{grid-template-columns:1fr}.form-row{grid-template-columns:1fr}.nav-burger{display:flex}
+      .nav-links{display:none;position:fixed;top:var(--nav-h);left:0;right:0;bottom:0;background:rgba(7,16,5,.97);backdrop-filter:blur(20px);flex-direction:column;align-items:center;justify-content:center;gap:36px;z-index:99;padding:40px}
+      .nav-links.open{display:flex}
+      .nav-links li{list-style:none;text-align:center}
+      .nav-links a{font-size:20px!important;font-weight:600!important;color:rgba(255,255,255,.85)!important;opacity:1!important}
+      .nav-has-drop .nav-drop{display:none!important}
+      .nav-cta-mob{display:inline-flex;margin-top:8px;padding:14px 32px!important;font-size:16px!important}}
+  
+    .nav-burger{display:none;flex-direction:column;justify-content:center;gap:5px;background:none;border:none;cursor:pointer;padding:6px;width:36px;height:36px;flex-shrink:0}
+    .nav-burger span{display:block;width:22px;height:2px;background:var(--w);border-radius:2px;transition:transform .25s,opacity .25s;pointer-events:none}
+    .nav-burger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+    .nav-burger.open span:nth-child(2){opacity:0;transform:scaleX(0)}
+    .nav-burger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
   </style>
 </head>
 <body>
@@ -133,6 +145,7 @@
       <li><a href="contact.html" class="active">Contact</a></li>
     </ul>
     <a href="devenir-partenaire.html" class="nav-cta">Devenir partenaire</a>
+    <button class="nav-burger" id="navBurger" aria-label="Menu"><span></span><span></span><span></span></button>
   </div>
 </nav>
 
@@ -178,20 +191,20 @@
           <div class="form-row">
             <div class="form-group">
               <label for="prenom">Prénom</label>
-              <input type="text" id="prenom" placeholder="Votre prénom" required>
+              <input type="text" id="prenom" name="prenom" placeholder="Votre prénom" required>
             </div>
             <div class="form-group">
               <label for="nom">Nom</label>
-              <input type="text" id="nom" placeholder="Votre nom" required>
+              <input type="text" id="nom" name="nom" placeholder="Votre nom" required>
             </div>
           </div>
           <div class="form-group">
             <label for="email">Email</label>
-            <input type="email" id="email" placeholder="vous@organisation.org" required>
+            <input type="email" id="email" name="email" placeholder="vous@organisation.org" required>
           </div>
           <div class="form-group">
             <label for="objet">Objet de la demande</label>
-            <select id="objet">
+            <select id="objet" name="objet">
               <option value="">Sélectionnez…</option>
               <option>Partenariat institutionnel</option>
               <option>Partenariat entreprise / sponsor</option>
@@ -203,10 +216,13 @@
           </div>
           <div class="form-group">
             <label for="message">Message</label>
-            <textarea id="message" placeholder="Décrivez votre demande…" required></textarea>
+            <textarea id="message" name="message" placeholder="Décrivez votre demande…" required></textarea>
+          </div>
+          <div class="form-group" style="flex-direction:row;align-items:flex-start;gap:10px">
+            <input type="checkbox" id="consent" name="consent" required style="flex-shrink:0;margin-top:3px;accent-color:var(--lime);width:15px;height:15px;cursor:pointer">
+            <label for="consent" style="font-size:12px;font-weight:300;color:var(--muted);letter-spacing:0;text-transform:none;line-height:1.6;cursor:pointer">Je consens à ce que Daki Farm / NRCI traite mes données personnelles afin de répondre à ma demande, conformément à sa politique de confidentialité.</label>
           </div>
           <button type="submit" class="form-submit">Envoyer →</button>
-          <p class="form-note">Vos données sont utilisées uniquement pour traiter votre demande.</p>
         </form>
       </div>
 
@@ -284,12 +300,50 @@
 
   function handleSubmit(e) {
     e.preventDefault();
-    const btn = e.target.querySelector('.form-submit');
-    btn.textContent = 'Message envoyé ✓';
-    btn.style.background = 'var(--dark)';
-    btn.style.color = 'var(--lime)';
+    const form = e.target;
+    const btn = form.querySelector('.form-submit');
+    const data = new FormData(form);
+    btn.textContent = 'Envoi en cours…';
     btn.disabled = true;
+    fetch('https://formspree.io/f/mykvyndy', {
+      method: 'POST',
+      body: data,
+      headers: { 'Accept': 'application/json' }
+    }).then(res => {
+      if (res.ok) {
+        btn.textContent = 'Message envoyé ✓';
+        btn.style.background = 'var(--dark)';
+        btn.style.color = 'var(--lime)';
+        form.reset();
+      } else {
+        btn.textContent = 'Erreur — réessayez';
+        btn.disabled = false;
+      }
+    }).catch(() => {
+      btn.textContent = 'Erreur — réessayez';
+      btn.disabled = false;
+    });
   }
+</script>
+<script>
+  /* mobile nav */
+  (function(){
+    var b=document.getElementById('navBurger');
+    var nl=document.querySelector('.nav-links');
+    if(!b||!nl)return;
+    b.addEventListener('click',function(){
+      b.classList.toggle('open');
+      nl.classList.toggle('open');
+      document.body.style.overflow=nl.classList.contains('open')?'hidden':'';
+    });
+    nl.querySelectorAll('a').forEach(function(a){
+      a.addEventListener('click',function(){
+        b.classList.remove('open');
+        nl.classList.remove('open');
+        document.body.style.overflow='';
+      });
+    });
+  })();
 </script>
 </body>
 </html>

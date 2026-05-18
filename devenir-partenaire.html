@@ -136,7 +136,27 @@
     .form-submit:hover{background:var(--lime-l)}
     .form-note{font-size:12px;font-weight:300;color:var(--muted);margin-top:-8px}
 
-    @media(max-width:900px){.types-grid,.form-layout{grid-template-columns:1fr}.proc-steps{grid-template-columns:1fr 1fr}.proc-steps::before{display:none}.form-row{grid-template-columns:1fr}.nav-links{display:none}}
+    /* VIDEO */
+    .part-video{padding:80px 0;background:var(--ink)}
+    .vid-wrap{max-width:900px;margin:0 auto}
+    .vid-eyebrow{display:block;font-weight:600;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--lime);margin-bottom:18px;text-align:center}
+    .vid-title{font-family:'Syne',sans-serif;font-weight:700;font-size:clamp(22px,2.5vw,36px);color:var(--w);letter-spacing:-.03em;text-align:center;margin-bottom:40px}
+    .vid-embed{position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:4px}
+    .vid-embed iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:0}
+
+    @media(max-width:900px){.types-grid,.form-layout{grid-template-columns:1fr}.proc-steps{grid-template-columns:1fr 1fr}.proc-steps::before{display:none}.form-row{grid-template-columns:1fr}.nav-burger{display:flex}
+      .nav-links{display:none;position:fixed;top:var(--nav-h);left:0;right:0;bottom:0;background:rgba(7,16,5,.97);backdrop-filter:blur(20px);flex-direction:column;align-items:center;justify-content:center;gap:36px;z-index:99;padding:40px}
+      .nav-links.open{display:flex}
+      .nav-links li{list-style:none;text-align:center}
+      .nav-links a{font-size:20px!important;font-weight:600!important;color:rgba(255,255,255,.85)!important;opacity:1!important}
+      .nav-has-drop .nav-drop{display:none!important}
+      .nav-cta-mob{display:inline-flex;margin-top:8px;padding:14px 32px!important;font-size:16px!important}}
+  
+    .nav-burger{display:none;flex-direction:column;justify-content:center;gap:5px;background:none;border:none;cursor:pointer;padding:6px;width:36px;height:36px;flex-shrink:0}
+    .nav-burger span{display:block;width:22px;height:2px;background:var(--w);border-radius:2px;transition:transform .25s,opacity .25s;pointer-events:none}
+    .nav-burger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+    .nav-burger.open span:nth-child(2){opacity:0;transform:scaleX(0)}
+    .nav-burger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
   </style>
 </head>
 <body>
@@ -161,6 +181,7 @@
       <li><a href="contact.html">Contact</a></li>
     </ul>
     <a href="devenir-partenaire.html" class="nav-cta active">Devenir partenaire</a>
+    <button class="nav-burger" id="navBurger" aria-label="Menu"><span></span><span></span><span></span></button>
   </div>
 </nav>
 
@@ -180,6 +201,22 @@
         <a href="#gouvernements" class="anchor-btn">Gouvernements &amp; institutions</a>
         <a href="#bailleurs" class="anchor-btn">Bailleurs &amp; ONG</a>
         <a href="#entreprises" class="anchor-btn">Entreprises &amp; sponsors</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VIDEO PRÉSENTATION -->
+<section class="part-video">
+  <div class="wrap">
+    <div class="vid-wrap">
+      <span class="vid-eyebrow r">Découvrez Daki Farm</span>
+      <h2 class="vid-title r r2">Pourquoi devenir partenaire ?</h2>
+      <div class="vid-embed r r3">
+        <iframe src="https://www.youtube.com/embed/jvyDfJUPDTE"
+                title="Daki Farm — Devenir partenaire"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen></iframe>
       </div>
     </div>
   </div>
@@ -356,11 +393,29 @@
 
   function handleSubmit(e) {
     e.preventDefault();
-    const btn = e.target.querySelector('.form-submit');
-    btn.textContent = 'Demande envoyée ✓';
-    btn.style.background = 'var(--dark)';
-    btn.style.color = 'var(--lime)';
+    const form = e.target;
+    const btn = form.querySelector('.form-submit');
+    const data = new FormData(form);
+    btn.textContent = 'Envoi en cours…';
     btn.disabled = true;
+    fetch('https://formspree.io/f/mykvyndy', {
+      method: 'POST',
+      body: data,
+      headers: { 'Accept': 'application/json' }
+    }).then(res => {
+      if (res.ok) {
+        btn.textContent = 'Demande envoyée ✓';
+        btn.style.background = 'var(--dark)';
+        btn.style.color = 'var(--lime)';
+        form.reset();
+      } else {
+        btn.textContent = 'Erreur — réessayez';
+        btn.disabled = false;
+      }
+    }).catch(() => {
+      btn.textContent = 'Erreur — réessayez';
+      btn.disabled = false;
+    });
   }
 
   // Process steps animation
@@ -398,6 +453,26 @@
       activateStep(pCurr);
     }, 2600);
   }
+</script>
+<script>
+  /* mobile nav */
+  (function(){
+    var b=document.getElementById('navBurger');
+    var nl=document.querySelector('.nav-links');
+    if(!b||!nl)return;
+    b.addEventListener('click',function(){
+      b.classList.toggle('open');
+      nl.classList.toggle('open');
+      document.body.style.overflow=nl.classList.contains('open')?'hidden':'';
+    });
+    nl.querySelectorAll('a').forEach(function(a){
+      a.addEventListener('click',function(){
+        b.classList.remove('open');
+        nl.classList.remove('open');
+        document.body.style.overflow='';
+      });
+    });
+  })();
 </script>
 </body>
 </html>
